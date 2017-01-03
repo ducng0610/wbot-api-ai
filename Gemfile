@@ -20,8 +20,6 @@ gem 'coffee-rails', '~> 4.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -54,3 +52,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'mongoid'
 gem 'haml'
+gem 'responders', '~> 2.0' # for respond_to and respond_with
+gem 'rails_param' # to validate/coerce request parameters
+gem 'rack-cors', require: 'rack/cors' # to set up cors
+gem 'pubnub' # pubnub ruby library
+gem 'wit' # wit ruby sdk
