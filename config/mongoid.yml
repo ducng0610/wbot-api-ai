@@ -1,7 +1,7 @@
 production:
   clients:
     default:
-      database: duc4nh
+      database: heroku_6bf76c3s
       hosts:
         - ds151078.mlab.com:51078
       options:
