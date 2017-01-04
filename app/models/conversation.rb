@@ -1,9 +1,8 @@
 class Conversation
   include Mongoid::Document
   field :uid, type: String
-  field :context, type: String
+  field :context, type: Hash
 
-  serialize :context, Hash
   before_create :set_uid
   has_many :messages
 
