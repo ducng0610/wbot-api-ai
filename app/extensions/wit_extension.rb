@@ -5,7 +5,7 @@ class WitExtension
   include Singleton
 
   def initialize
-    access_token = '7DO5OGFBNMKCLW57NIIO5I7CS27RAJCU'
+    access_token = ENV['server_access_token']
     actions = {
       send: lambda do |_request, response|
         PubnubExtension.instance.client.publish(message: response['text'], channel: @conversation.uid)
@@ -13,25 +13,15 @@ class WitExtension
         puts("sending... #{response['text']}")
       end,
 
-      findTheatre: lambda do |request|
+      getForecast: lambda do |request|
                      context = request['context']
                      entities = request['entities']
 
-                     showTime = first_entity_value(entities, 'datetime') || context['showTime']
-                     movie = first_entity_value(entities, 'movie') || context['movue']
+                     location = first_entity_value(entities, 'location') || context['location']
+                     intent = first_entity_value(entities, 'intent') || context['intent']
 
-                     if showTime
-                       context['showTime'] = showTime
-                       context.delete('missingTime')
-                     else
-                       context['missingTime'] = true
-                     end
-
-                     context['movie'] = movie if movie
-
-                     if showTime && movie
-                       theatre = search_theatres(showTime, movie)
-                       context['theatre'] = theatre
+                     if location && intent == 'weather'
+                       context['forecast'] = search_forecast(location)
                        new_context = {}
                      else
                        new_context = context
@@ -60,9 +50,9 @@ class WitExtension
     val.is_a?(Hash) ? val['value'] : val
   end
 
-  def search_theatres(_showTime, _movie)
+  def search_forecast(location)
     # perform search query magic
-    puts 'Searching for Theatre...'
-    'Random Theatre'
+    puts 'Searching for weather...'
+    'Sunny Randomy'
   end
 end
