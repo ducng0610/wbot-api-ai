@@ -9,7 +9,7 @@ class Api::ChatController < ApplicationController
     validate_message_params
     set_conversation
     create_incoming_message(params[:message])
-    WitExtension.instance.client.run_actions(@conversation.uid, params[:message], @conversation.context)
+    WitExtension.instance.client.run_actions(@conversation.uid, params[:message], @conversation.context.to_h)
     puts "SENDING TO WIT #{params[:message]}"
   end
 
@@ -41,7 +41,7 @@ class Api::ChatController < ApplicationController
   end
 
   def set_conversation
-    @conversation = Conversation.find_by_uid(params[:uid])
+    @conversation = Conversation.find_by(uid: params[:uid])
     WitExtension.instance.set_conversation(@conversation)
   end
 end
