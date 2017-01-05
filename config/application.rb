@@ -23,5 +23,9 @@ module Wbot
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths += %W(#{config.root}/app/extensions)
     config.autoload_paths += Dir["#{config.root}/app/extensions/**/"]
+
+    # Auto-load /bot and its subdirectories
+    config.paths.add File.join('app', 'bot'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'bot', '*')]
   end
 end

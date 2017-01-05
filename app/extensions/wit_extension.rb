@@ -50,7 +50,7 @@ class WitExtension
     val.is_a?(Hash) ? val['value'] : val
   end
 
-  def search_forecast(location)
+  def search_forecast(_location)
     # perform search query magic
     puts 'Searching for weather...'
     'Sunny Randomy'
