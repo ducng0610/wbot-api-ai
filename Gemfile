@@ -45,6 +45,8 @@ group :development do
   gem 'erb2haml'
   gem 'rubocop', '~> 0.46.0', require: false
   gem 'pry-rails'
+
+  gem 'figaro'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
