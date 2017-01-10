@@ -3,12 +3,12 @@ class WeatherExtension
     def search_2hour_nowcast(location)
       dataset = '2hr_nowcast'
       forecast_raw_data = search(dataset)
-      return '/api error/' if forecast_raw_data.nil?
-      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'] == location }.first
+
+      return nil if forecast_raw_data.nil?
+
+      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].downcase == location.downcase }.first
       if forecast_data_needed.present?
         get_forecast_meaning(forecast_data_needed['forecast'])
-      else
-        '/not found/'
       end
     end
 

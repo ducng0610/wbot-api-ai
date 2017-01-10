@@ -20,7 +20,8 @@ class WitExtension
                      intent = first_entity_value(entities, 'intent') || context['intent']
 
                      if location
-                       context['forecast'] = search_forecast(location)
+                       forecast = search_forecast(location)
+                       context['forecast'] = forecast if forecast.present?
                        new_context = {}
                      else
                        new_context = context
