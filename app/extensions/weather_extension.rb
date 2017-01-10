@@ -1,11 +1,12 @@
 class WeatherExtension
   class << self
-    KEYREF = ' 781CF461BB6606AD814EFA58445F9F5F5B033976558B4904'
+    KEYREF = ' 781CF461BB6606AD814EFA58445F9F5F5B033976558B4904'.freeze
 
     def search_2hour_nowcast(location)
       dataset = '2hr_nowcast'
       forecast_raw_data = search(dataset)
-      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select{ |ae| ae['name'] == location }.first
+      puts "[debuz] search #{location} ... and got #{forecast_raw_data.to_json}"
+      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'] == location }.first
       if forecast_data_needed.present?
         get_forecast_meaning(forecast_data_needed['forecast'])
       else
@@ -18,17 +19,18 @@ class WeatherExtension
     def search(dataset)
       url = get_url(dataset)
 
-      RestClient.get(url) { |response, request, result|
+      RestClient.get(url) do |response, _request, _result|
         if response.code == 200
+          puts "[debuz] restclient: got #{response.body} ..."
           return Hash.from_xml(response.body).as_json
         else
           puts "[debuz] got external API error: #{response.body}"
         end
-      }
+      end
     end
 
     def get_url(dataset)
-      "http://api.nea.gov.sg/api/WebAPI/?dataset=" + dataset + "&keyref=" + KEYREF
+      'http://api.nea.gov.sg/api/WebAPI/?dataset=' + dataset + '&keyref=' + KEYREF
     end
 
     def get_forecast_meaning(abbreviation)
@@ -71,5 +73,3 @@ class WeatherExtension
     end
   end
 end
-
-
