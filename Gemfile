@@ -57,6 +57,5 @@ gem 'haml'
 gem 'responders', '~> 2.0' # for respond_to and respond_with
 gem 'rails_param' # to validate/coerce request parameters
 gem 'rack-cors', require: 'rack/cors' # to set up cors
-gem 'pubnub' # pubnub ruby library
 gem 'wit' # wit ruby sdk
 gem 'facebook-messenger' # facebook-messenger

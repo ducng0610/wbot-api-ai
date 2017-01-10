@@ -1,5 +1,7 @@
 class Message
   include Mongoid::Document
+  include Mongoid::Timestamps
+
   field :body, type: String
   field :conversation_id, type: Integer
   field :kind, type: String

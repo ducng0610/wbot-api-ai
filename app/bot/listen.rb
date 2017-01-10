@@ -12,10 +12,13 @@ Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 # message.text        # => 'Hello, bot!'
 
 Bot.on :message do |message|
+  puts "[debuz] got from Facebook... #{message}"
+  response = ChatExtension.response(message.text, message.sender['id'])
+
   Bot.deliver({
                 recipient: message.sender,
                 message: {
-                  text: message.text
+                  text: response
                 }
               }, access_token: ENV['ACCESS_TOKEN'])
 end

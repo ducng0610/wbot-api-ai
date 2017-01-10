@@ -8,9 +8,8 @@ class WitExtension
     access_token = ENV['server_access_token']
     actions = {
       send: lambda do |_request, response|
-        PubnubExtension.instance.client.publish(message: response['text'], channel: @conversation.uid)
         @conversation.messages.create(body: response['text'], kind: 'outgoing')
-        puts("sending... #{response['text']}")
+        puts("[debuz] got response... #{response['text']}")
       end,
 
       getForecast: lambda do |request|
@@ -51,8 +50,7 @@ class WitExtension
   end
 
   def search_forecast(_location)
-    # perform search query magic
-    puts 'Searching for weather...'
+    puts '[debuz] Searching for weather...'
     'Sunny Randomy'
   end
 end
