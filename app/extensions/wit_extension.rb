@@ -51,6 +51,6 @@ class WitExtension
 
   def search_forecast(_location)
     puts '[debuz] Searching for weather...'
-    'Sunny Randomy'
+    WeatherExtension.search_2hour_nowcast(_location)
   end
 end

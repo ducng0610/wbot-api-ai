@@ -59,3 +59,4 @@ gem 'rails_param' # to validate/coerce request parameters
 gem 'rack-cors', require: 'rack/cors' # to set up cors
 gem 'wit' # wit ruby sdk
 gem 'facebook-messenger' # facebook-messenger
+gem 'rest-client'
