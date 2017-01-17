@@ -21,7 +21,11 @@ class WitExtension
 
                      if location
                        forecast = search_forecast(location)
-                       context['forecast'] = forecast if forecast.present?
+                       if forecast.present?
+                         context['forecast'] = forecast
+                       else
+                         context['missingData'] = 'true'
+                       end
                        new_context = {}
                      else
                        new_context = context
