@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/bot/listen.rb
 
 require 'facebook/messenger'

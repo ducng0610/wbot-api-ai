@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'wit'
 require 'singleton'
 
@@ -33,7 +34,19 @@ class WitExtension
 
                      @conversation.update(context: new_context)
                      return context
-                   end
+                   end,
+
+      get24HoursForecast: lambda do |request|
+                            context = request['context']
+                            entities = request['entities']
+
+                            # location = first_entity_value(entities, 'location') || context['location']
+                            context['24HoursForecast'] = search_24HoursForecast
+                            new_context = {}
+
+                            @conversation.update(context: new_context)
+                            return context
+                          end
     }
 
     @client = Wit.new(access_token: access_token, actions: actions)
@@ -57,5 +70,10 @@ class WitExtension
   def search_forecast(_location)
     puts "[debuz] Searching for weather in #{_location} ..."
     WeatherExtension.search_2hour_nowcast(_location)
+  end
+
+  def search_24HoursForecast
+    puts '[debuz] Searching for 24-hour forecast ...'
+    WeatherExtension.search_24hrs_forecast
   end
 end

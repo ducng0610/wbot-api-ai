@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # config/initializers/facebook_messenger.rb
 
 unless Rails.env.production?

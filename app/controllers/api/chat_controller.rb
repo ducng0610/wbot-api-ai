@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Api::ChatController < ApplicationController
   def start
     create_conversation

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class WeatherExtension
   class << self
     def search_2hour_nowcast(location)
@@ -6,10 +7,19 @@ class WeatherExtension
 
       return nil if forecast_raw_data.nil?
 
-      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].downcase == location.downcase }.first
+      forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].casecmp(location.downcase).zero? }.first
       if forecast_data_needed.present?
         get_forecast_meaning(forecast_data_needed['forecast'])
       end
+    end
+
+    def search_24hrs_forecast
+      dataset = '24hrs_forecast'
+      forecast_raw_data = search(dataset)
+
+      return nil if forecast_raw_data.nil?
+
+      forecast_raw_data['channel']['main']['forecast']
     end
 
     private
