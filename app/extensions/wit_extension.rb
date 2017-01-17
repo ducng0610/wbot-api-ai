@@ -46,7 +46,32 @@ class WitExtension
 
                             @conversation.update(context: new_context)
                             return context
-                          end
+                          end,
+
+      getPsi: lambda do |request|
+                context = request['context']
+                entities = request['entities']
+
+                location = first_entity_value(entities, 'location') || context['location']
+                intent = first_entity_value(entities, 'intent') || context['intent']
+
+                if location
+                  hour_psi = search_hour_psi(location)
+                  day_psi = search_day_psi(location)
+                  if hour_psi.present? && day_psi.present?
+                    context['hour_psi'] = hour_psi
+                    context['day_psi'] = day_psi
+                  else
+                    context['missingData'] = 'true'
+                  end
+                  new_context = {}
+                else
+                  new_context = context
+                end
+
+                @conversation.update(context: new_context)
+                return context
+              end
     }
 
     @client = Wit.new(access_token: access_token, actions: actions)
@@ -67,13 +92,23 @@ class WitExtension
     val.is_a?(Hash) ? val['value'] : val
   end
 
-  def search_forecast(_location)
-    puts "[debuz] Searching for weather in #{_location} ..."
-    WeatherExtension.search_2hour_nowcast(_location)
+  def search_forecast(location)
+    puts "[debuz] Searching for weather in #{location} ..."
+    WeatherExtension.search_forecast(location)
   end
 
   def search_24HoursForecast
     puts '[debuz] Searching for 24-hour forecast ...'
-    WeatherExtension.search_24hrs_forecast
+    WeatherExtension.search_24HoursForecast
+  end
+
+  def search_hour_psi(location)
+    puts "[debuz] Searching for hour_psi forecast in #{location} ..."
+    WeatherExtension.search_hour_psi(location)
+  end
+
+  def search_day_psi(location)
+    puts "[debuz] Searching for day_psi forecast in #{location} ..."
+    WeatherExtension.search_day_psi(location)
   end
 end

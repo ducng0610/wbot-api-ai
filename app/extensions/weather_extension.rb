@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class WeatherExtension
   class << self
-    def search_2hour_nowcast(location)
+    def search_forecast(location)
       dataset = '2hr_nowcast'
       forecast_raw_data = search(dataset)
 
@@ -13,7 +13,7 @@ class WeatherExtension
       end
     end
 
-    def search_24hrs_forecast
+    def search_24HoursForecast
       dataset = '24hrs_forecast'
       forecast_raw_data = search(dataset)
 
@@ -22,7 +22,46 @@ class WeatherExtension
       forecast_raw_data['channel']['main']['forecast']
     end
 
+    def search_hour_psi(location)
+      dataset = 'pm2.5_update'
+      forecast_raw_data = search(dataset)
+
+      begin
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(encode_region(location).downcase).zero? }.first['record']['reading']['value']
+      rescue
+      end
+    end
+
+    def search_day_psi(location)
+      dataset = 'psi_update'
+      forecast_raw_data = search(dataset)
+
+      begin
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
+      rescue
+      end
+    end
+
     private
+
+    def encode_region(location)
+      case location.downcase
+      when 'national reporting stations'
+        'NRS'
+      when 'north region', 'north'
+        'rNO'
+      when 'south region', 'south'
+        'rSO'
+      when 'central region', 'central', 'center', 'middle'
+        'rCE'
+      when 'west region', 'west'
+        'rWE'
+      when 'east region', 'east'
+        'rEA'
+      else
+        ''
+      end
+    end
 
     def search(dataset)
       url = get_url(dataset)
