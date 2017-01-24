@@ -13,13 +13,22 @@ class WeatherExtension
       end
     end
 
-    def search_24HoursForecast
+    def search_24HoursForecast(location)
       dataset = '24hrs_forecast'
       forecast_raw_data = search(dataset)
 
       return nil if forecast_raw_data.nil?
 
-      forecast_raw_data['channel']['main']['forecast']
+      location = encode_region_24HoursForecast(location)
+      return nil if location.blank?
+
+      forecast_data = []
+      (3..5).each do |index|
+        forecast = forecast_raw_data['channel'].to_a[index][1]
+        forecast_data << "#{get_forecast_meaning(forecast[location])} from #{forecast['timePeriod']}"
+      end
+
+      forecast_data.join('. ')
     end
 
     def search_hour_psi(location)
@@ -48,16 +57,33 @@ class WeatherExtension
       case location.downcase
       when 'national reporting stations'
         'NRS'
-      when 'north region', 'north'
+      when /north/
         'rNO'
-      when 'south region', 'south'
+      when /south/
         'rSO'
-      when 'central region', 'central', 'center', 'middle'
+      when /central/, /center/
         'rCE'
-      when 'west region', 'west'
+      when /west/
         'rWE'
-      when 'east region', 'east'
+      when /east/
         'rEA'
+      else
+        ''
+      end
+    end
+
+    def encode_region_24HoursForecast(location)
+      case location.downcase
+      when /north/
+        'wxnorth'
+      when /south/
+        'wxsouth'
+      when /central/, /center/
+        'wxcentral'
+      when /west/
+        'wxwest'
+      when /east/
+        'wxeast'
       else
         ''
       end

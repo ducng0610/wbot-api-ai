@@ -40,9 +40,15 @@ class WitExtension
                             context = request['context']
                             entities = request['entities']
 
-                            # location = first_entity_value(entities, 'location') || context['location']
-                            context['24HoursForecast'] = search_24HoursForecast
-                            new_context = {}
+                            location = first_entity_value(entities, 'location') || context['location']
+                            intent = first_entity_value(entities, 'intent') || context['intent']
+
+                            if location
+                              context['24HoursForecast'] = search_24HoursForecast(location)
+                              new_context = {}
+                            else
+                              new_context = context
+                            end
 
                             @conversation.update(context: new_context)
                             return context
@@ -97,9 +103,9 @@ class WitExtension
     WeatherExtension.search_forecast(location)
   end
 
-  def search_24HoursForecast
-    puts '[debuz] Searching for 24-hour forecast ...'
-    WeatherExtension.search_24HoursForecast
+  def search_24HoursForecast(location)
+    puts '[debuz] Searching for 24-hour forecast #{location} ...'
+    WeatherExtension.search_24HoursForecast(location)
   end
 
   def search_hour_psi(location)
