@@ -14,12 +14,16 @@ Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 
 Bot.on :message do |message|
   puts "[debuz] got from Facebook... #{message.text}"
-  response = ChatExtension.response(message.text, message.sender['id'])
+  wit_response_message = ChatExtension.response(message.text, message.sender['id'])
+  if wit_response_message.quick_replies.present?
+    quick_replies = wit_response_message.quick_replies.map { |qr| { title: qr.title, content_type: qr.content_type, payload: qr.payload } }
+  end
 
   Bot.deliver({
                 recipient: message.sender,
                 message: {
-                  text: response
+                  text: wit_response_message.body,
+                  quick_replies: quick_replies ? quick_replies : nil
                 }
               }, access_token: ENV['ACCESS_TOKEN'])
 end

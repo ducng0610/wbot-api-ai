@@ -8,7 +8,7 @@ class ChatExtension
       WitExtension.instance.client.run_actions(@conversation.uid, message, @conversation.context.to_h)
 
       # Return the WIT's response, which stored in the conversation
-      @conversation.messages.order(created_at: :asc).last.body
+      @conversation.messages.order(created_at: :asc).last
     end
 
     private

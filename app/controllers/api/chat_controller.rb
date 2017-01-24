@@ -10,7 +10,8 @@ class Api::ChatController < ApplicationController
     set_conversation
     create_incoming_message(params[:message])
     WitExtension.instance.client.run_actions(@conversation.uid, params[:message], @conversation.context.to_h)
-    puts "SENDING TO WIT #{params[:message]}"
+
+    render json: @conversation.messages.order(created_at: :asc).last
   end
 
   private
@@ -21,7 +22,7 @@ class Api::ChatController < ApplicationController
   end
 
   def create_conversation
-    @conversation = Conversation.create
+    @conversation = Conversation.create(uid: Time.now.to_i)
     WitExtension.instance.set_conversation(@conversation)
   end
 
