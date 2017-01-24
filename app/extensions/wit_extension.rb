@@ -25,71 +25,74 @@ class WitExtension
         puts("[debuz] got response... #{response['text']}")
       end,
 
-      getForecast: lambda do |request|
-                     context = request['context']
-                     entities = request['entities']
+      getForecast:
+        lambda do |request|
+          context = request['context']
+          entities = request['entities']
 
-                     location = first_entity_value(entities, 'location') || context['location']
-                     intent = first_entity_value(entities, 'intent') || context['intent']
+          location = first_entity_value(entities, 'location') || context['location']
+          intent = first_entity_value(entities, 'intent') || context['intent']
 
-                     if location
-                       forecast = search_forecast(location)
-                       if forecast.present?
-                         context['forecast'] = forecast
-                       else
-                         context['missingData'] = 'true'
-                       end
-                       new_context = {}
-                     else
-                       new_context = context
-                     end
+          if location
+            forecast = search_forecast(location)
+            if forecast.present?
+              context['forecast'] = forecast
+            else
+              context['missingData'] = 'true'
+            end
+            new_context = {}
+          else
+            new_context = context
+          end
 
-                     @conversation.update(context: new_context)
-                     return context
-                   end,
+          @conversation.update(context: new_context)
+          return context
+        end,
 
-      get24HoursForecast: lambda do |request|
-                            context = request['context']
-                            entities = request['entities']
+      get24HoursForecast:
+        lambda do |request|
+          context = request['context']
+          entities = request['entities']
 
-                            location = first_entity_value(entities, 'location') || context['location']
-                            intent = first_entity_value(entities, 'intent') || context['intent']
+          location = first_entity_value(entities, 'location') || context['location']
+          intent = first_entity_value(entities, 'intent') || context['intent']
 
-                            if location
-                              context['24HoursForecast'] = search_24HoursForecast(location)
-                              new_context = {}
-                            else
-                              new_context = context
-                            end
+          if location
+            context['24HoursForecast'] = search_24HoursForecast(location)
+            new_context = {}
+          else
+            new_context = context
+          end
 
-                            @conversation.update(context: new_context)
-                            return context
-                          end,
+          @conversation.update(context: new_context)
+          return context
+        end,
 
-      getPsi: lambda do |request|
-                context = request['context']
-                entities = request['entities']
+      getPsi:
+        lambda do |request|
+          context = request['context']
+          entities = request['entities']
 
-                location = first_entity_value(entities, 'location') || context['location']
-                intent = first_entity_value(entities, 'intent') || context['intent']
+          location = first_entity_value(entities, 'location') || context['location']
+          intent = first_entity_value(entities, 'intent') || context['intent']
 
-                if location
-                  hour_psi = search_hour_psi(location)
-                  day_psi = search_day_psi(location)
-                  if hour_psi.present? && day_psi.present?
-                    context['hour_psi'] = hour_psi
-                    context['day_psi'] = day_psi
-                  else
-                    context['missingData'] = 'true'
-                  end
-                  new_context = {}
-                else
-                  new_context = context
-                end
+          if location
+            hour_psi = search_hour_psi(location)
+            day_psi = search_day_psi(location)
+            if hour_psi.present? && day_psi.present?
+              context['hour_psi'] = hour_psi
+              context['day_psi'] = day_psi
+            else
+              context['missingData'] = 'true'
+            end
+            new_context = {}
+          else
+            new_context = context
+          end
 
-                @conversation.update(context: new_context)
-                return context
-              end
+          @conversation.update(context: new_context)
+          return context
+        end
     }
 
     @client = Wit.new(access_token: access_token, actions: actions)

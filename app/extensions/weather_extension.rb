@@ -9,7 +9,7 @@ class WeatherExtension
 
       forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].casecmp(location.downcase).zero? }.first
       if forecast_data_needed.present?
-        get_forecast_meaning(forecast_data_needed['forecast'])
+        AbbreviationExtension.get_forecast_meaning(forecast_data_needed['forecast'])
       end
     end
 
@@ -19,13 +19,13 @@ class WeatherExtension
 
       return nil if forecast_raw_data.nil?
 
-      location = encode_region_24HoursForecast(location)
+      location = AbbreviationExtension.encode_region_24HoursForecast(location)
       return nil if location.blank?
 
       forecast_data = []
       (3..5).each do |index|
         forecast = forecast_raw_data['channel'].to_a[index][1]
-        forecast_data << "#{get_forecast_meaning(forecast[location])} from #{forecast['timePeriod']}"
+        forecast_data << "#{AbbreviationExtension.get_forecast_meaning(forecast[location])} from #{forecast['timePeriod']}"
       end
 
       forecast_data.join('. ')
@@ -36,7 +36,7 @@ class WeatherExtension
       forecast_raw_data = search(dataset)
 
       begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(encode_region(location).downcase).zero? }.first['record']['reading']['value']
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationExtension.encode_region(location).downcase).zero? }.first['record']['reading']['value']
       rescue
       end
     end
@@ -46,48 +46,12 @@ class WeatherExtension
       forecast_raw_data = search(dataset)
 
       begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationExtension.encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
       rescue
       end
     end
 
     private
-
-    def encode_region(location)
-      case location.downcase
-      when 'national reporting stations'
-        'NRS'
-      when /north/
-        'rNO'
-      when /south/
-        'rSO'
-      when /central/, /center/
-        'rCE'
-      when /west/
-        'rWE'
-      when /east/
-        'rEA'
-      else
-        ''
-      end
-    end
-
-    def encode_region_24HoursForecast(location)
-      case location.downcase
-      when /north/
-        'wxnorth'
-      when /south/
-        'wxsouth'
-      when /central/, /center/
-        'wxcentral'
-      when /west/
-        'wxwest'
-      when /east/
-        'wxeast'
-      else
-        ''
-      end
-    end
 
     def search(dataset)
       url = get_url(dataset)
@@ -104,45 +68,6 @@ class WeatherExtension
 
     def get_url(dataset)
       'http://api.nea.gov.sg/api/WebAPI/?dataset=' + dataset + '&keyref=' + ENV['WEATHER_API_KEYREF']
-    end
-
-    def get_forecast_meaning(abbreviation)
-      weather_abbreviation = {
-        'BR' => 'Mist',
-        'CL' => 'Cloudy',
-        'DR' => 'Drizzle',
-        'FA' => 'Fair (Day)',
-        'FG' => 'Fog',
-        'FN' => 'Fair (Night)',
-        'FW' => 'Fair & Warm',
-        'HG' => 'Heavy Thundery Showers with Gusty Winds',
-        'HR' => 'Heavy Rain',
-        'HS' => 'Heavy Showers',
-        'HT' => 'Heavy Thundery Showers',
-        'HZ' => 'Hazy',
-        'LH' => 'Slightly Hazy',
-        'LR' => 'Light Rain',
-        'LS' => 'Light Showers',
-        'OC' => 'Overcast',
-        'PC' => 'Partly Cloudy (Day)',
-        'PN' => 'Partly Cloudy (Night)',
-        'PS' => 'Passing Showers',
-        'RA' => 'Moderate Rain',
-        'SH' => 'Showers',
-        'SK' => 'Strong Winds, Showers',
-        'SN' => 'Snow',
-        'SR' => 'Strong Winds, Rain',
-        'SS' => 'Snow Showers',
-        'SU' => 'Sunny',
-        'SW' => 'Strong Winds',
-        'TL' => 'Thundery Showers',
-        'WC' => 'Windy, Cloudy',
-        'WD' => 'Windy',
-        'WF' => 'Windy, Fair',
-        'WR' => 'Windy, Rain',
-        'WS' => 'Windy, Showers'
-      }
-      weather_abbreviation[abbreviation]
     end
   end
 end
