@@ -57,6 +57,7 @@ class WeatherExtension
           type: 'template',
           payload: {
             template_type: 'list',
+            top_element_style: 'large',
             elements: elements
           }
         }
