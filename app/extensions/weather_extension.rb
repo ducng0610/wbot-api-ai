@@ -22,13 +22,46 @@ class WeatherExtension
       location = AbbreviationExtension.encode_region_24HoursForecast(location)
       return nil if location.blank?
 
-      forecast_data = []
+      elements = []
+      elements << {
+        title: "24 Hour Forecast",
+        image_url: "http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg",
+        subtitle: "Meteorological Service Singapore",
+        default_action: {
+          type: "web_url",
+          url: "https://robusttechhouse.com/",
+          messenger_extensions: true,
+          webview_height_ratio: "tall",
+          fallback_url: "https://robusttechhouse.com/"
+        }
+      }
+
       (3..5).each do |index|
         forecast = forecast_raw_data['channel'].to_a[index][1]
-        forecast_data << "#{AbbreviationExtension.get_forecast_meaning(forecast[location])} from #{forecast['timePeriod']}"
+        elements << {
+          title: AbbreviationExtension.get_forecast_meaning(forecast[location]),
+          image_url: "https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png",
+          subtitle: forecast['timePeriod'],
+          default_action: {
+            type: "web_url",
+            url: "https://robusttechhouse.com/",
+            messenger_extensions: true,
+            webview_height_ratio: "tall",
+            fallback_url: "https://robusttechhouse.com/"
+          }
+        }
       end
 
-      forecast_data.join('. ')
+      response = {
+        attachment: {
+          type: "template",
+          payload: {
+            template_type: "list",
+            elements: elements
+          }
+        }
+      }
+      response.to_json
     end
 
     def search_hour_psi(location)

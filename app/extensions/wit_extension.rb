@@ -8,8 +8,8 @@ class WitExtension
   def initialize
     access_token = ENV['server_access_token']
     actions = {
-      send: lambda do |_request, response|
-        message = Message.new(body: response['text'], kind: 'outgoing', conversation: @conversation)
+      send: lambda do |request, response|
+        message = Message.create(body: response['text'], kind: 'outgoing', conversation: @conversation)
         if response['quickreplies'].present?
           response['quickreplies'].each do |quick_reply|
             QuickReply.create(
@@ -21,7 +21,6 @@ class WitExtension
           end
         end
 
-        message.save
         puts("[debuz] got response... #{response['text']}")
       end,
 
