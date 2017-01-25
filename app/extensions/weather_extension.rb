@@ -24,15 +24,15 @@ class WeatherExtension
 
       elements = []
       elements << {
-        title: "24 Hour Forecast",
-        image_url: "http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg",
-        subtitle: "Meteorological Service Singapore",
+        title: '24 Hour Forecast',
+        image_url: 'http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg',
+        subtitle: 'Meteorological Service Singapore',
         default_action: {
-          type: "web_url",
-          url: "https://robusttechhouse.com/",
+          type: 'web_url',
+          url: 'https://robusttechhouse.com/',
           messenger_extensions: true,
-          webview_height_ratio: "tall",
-          fallback_url: "https://robusttechhouse.com/"
+          webview_height_ratio: 'tall',
+          fallback_url: 'https://robusttechhouse.com/'
         }
       }
 
@@ -40,23 +40,23 @@ class WeatherExtension
         forecast = forecast_raw_data['channel'].to_a[index][1]
         elements << {
           title: AbbreviationExtension.get_forecast_meaning(forecast[location]),
-          image_url: "https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png",
+          image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
           subtitle: forecast['timePeriod'],
           default_action: {
-            type: "web_url",
-            url: "https://robusttechhouse.com/",
+            type: 'web_url',
+            url: 'https://robusttechhouse.com/',
             messenger_extensions: true,
-            webview_height_ratio: "tall",
-            fallback_url: "https://robusttechhouse.com/"
+            webview_height_ratio: 'tall',
+            fallback_url: 'https://robusttechhouse.com/'
           }
         }
       end
 
       response = {
         attachment: {
-          type: "template",
+          type: 'template',
           payload: {
-            template_type: "list",
+            template_type: 'list',
             elements: elements
           }
         }

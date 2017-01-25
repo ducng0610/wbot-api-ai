@@ -7,7 +7,9 @@ class MessageDigestor
       end
 
       if /FACEBOOK_TEMPLATE_LIST/ === message.body
-        return JSON.parse(message.body.slice('FACEBOOK_TEMPLATE_LIST:'))
+        body = message.body
+        body.slice!('FACEBOOK_TEMPLATE_LIST:')
+        return JSON.parse(body)
       else
         return {
           text: message.body,
