@@ -41,12 +41,7 @@ class WeatherExtension
         elements << {
           title: AbbreviationExtension.get_forecast_meaning(forecast[location]),
           image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
-          subtitle: forecast['timePeriod'],
-          default_action: {
-            type: 'web_url',
-            messenger_extensions: true,
-            webview_height_ratio: 'tall'
-          }
+          subtitle: forecast['timePeriod']
         }
       end
 
