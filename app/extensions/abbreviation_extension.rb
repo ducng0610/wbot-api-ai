@@ -37,6 +37,10 @@ class AbbreviationExtension
       end
     end
 
+    def decode_region(location)
+      location[2,5].capitalize
+    end
+
     def get_forecast_meaning(abbreviation)
       weather_abbreviation = {
         'BR' => 'Mist',
