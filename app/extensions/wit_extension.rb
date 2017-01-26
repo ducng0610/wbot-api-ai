@@ -9,6 +9,8 @@ class WitExtension
     access_token = ENV['server_access_token']
     actions = {
       send: lambda do |_request, response|
+        puts("[debuz] got response... #{response['text']}")
+
         message = Message.create(body: response['text'], kind: 'outgoing', conversation: @conversation)
         if response['quickreplies'].present?
           response['quickreplies'].each do |quick_reply|
@@ -21,7 +23,8 @@ class WitExtension
           end
         end
 
-        puts("[debuz] got response... #{response['text']}")
+        # Send the message back to facebook user
+        MessageDigestor.digest(message, @conversation.uid)
       end,
 
       getForecast:

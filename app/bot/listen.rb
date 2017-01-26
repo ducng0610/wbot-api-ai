@@ -14,11 +14,5 @@ Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 
 Bot.on :message do |message|
   puts "[debuz] got from Facebook... #{message.text}"
-  wit_response_message = ChatExtension.response(message.text, message.sender['id'])
-  reponse_message = MessageDigestor.digest(wit_response_message)
-
-  Bot.deliver({
-                recipient: message.sender,
-                message: reponse_message
-              }, access_token: ENV['ACCESS_TOKEN'])
+  ChatExtension.response(message.text, message.sender['id'])
 end

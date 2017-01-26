@@ -6,9 +6,6 @@ class ChatExtension
       find_or_initialize_conversation(uid)
       create_incoming_message(message)
       WitExtension.instance.client.run_actions(@conversation.uid, message, @conversation.context.to_h)
-
-      # Return the WIT's response, which stored in the conversation
-      @conversation.messages.order(created_at: :asc).last
     end
 
     private
