@@ -33,7 +33,15 @@ class WitExtension
           entities = request['entities']
 
           location = first_entity_value(entities, 'location') || context['location']
-          intent = first_entity_value(entities, 'intent') || context['intent']
+          # intent = first_entity_value(entities, 'intent') || context['intent']
+
+          known_location = KnownLocation.get_known_location(location, 'location')
+          if known_location
+            location = known_location
+          else
+            location = KnownLocation.guess_known_location(location, 'location')
+            context['guess_location'] = location
+          end
 
           if location
             forecast = search_forecast(location)
@@ -57,7 +65,15 @@ class WitExtension
           entities = request['entities']
 
           location = first_entity_value(entities, 'location') || context['location']
-          intent = first_entity_value(entities, 'intent') || context['intent']
+          # intent = first_entity_value(entities, 'intent') || context['intent']
+
+          known_location = KnownLocation.get_known_location(location, 'region')
+          if known_location
+            location = known_location
+          else
+            location = KnownLocation.guess_known_location(location, 'region')
+            context['guess_location'] = location
+          end
 
           if location
             context['24HoursForecast'] = search_24HoursForecast(location)
@@ -76,7 +92,15 @@ class WitExtension
           entities = request['entities']
 
           location = first_entity_value(entities, 'location') || context['location']
-          intent = first_entity_value(entities, 'intent') || context['intent']
+          # intent = first_entity_value(entities, 'intent') || context['intent']
+
+          known_location = KnownLocation.get_known_location(location, 'region')
+          if known_location
+            location = known_location
+          else
+            location = KnownLocation.guess_known_location(location, 'region')
+            context['guess_location'] = location
+          end
 
           if location
             hour_psi = search_hour_psi(location)

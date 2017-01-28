@@ -38,7 +38,7 @@ class AbbreviationExtension
     end
 
     def decode_region_24HoursForecast(location)
-      location[2,5].capitalize
+      location[2, 5].capitalize
     end
 
     def get_forecast_meaning(abbreviation)
