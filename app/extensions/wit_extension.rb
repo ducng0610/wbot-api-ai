@@ -38,6 +38,7 @@ class WitExtension
           known_location = KnownLocation.get_known_location(location, 'location')
           if known_location
             location = known_location
+            context['location'] = known_location
           else
             location = KnownLocation.guess_known_location(location, 'location')
             context['guess_location'] = location
@@ -70,6 +71,7 @@ class WitExtension
           known_location = KnownLocation.get_known_location(location, 'region')
           if known_location
             location = known_location
+            context['location'] = known_location
           else
             location = KnownLocation.guess_known_location(location, 'region')
             context['guess_location'] = location
@@ -97,6 +99,7 @@ class WitExtension
           known_location = KnownLocation.get_known_location(location, 'region')
           if known_location
             location = known_location
+            context['location'] = known_location
           else
             location = KnownLocation.guess_known_location(location, 'region')
             context['guess_location'] = location

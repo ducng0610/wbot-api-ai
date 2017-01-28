@@ -18,11 +18,13 @@ class KnownLocation
 
   def self.get_known_location(location, type)
     return nil if location.blank?
+    location.gsub!('psi', '') # Quick fix for wit/location taking 'psi' as location name
 
-    regex_str = Regexp.new(location.downcase)
-    known_location = KnownLocation.where(name: regex_str, type: type).first
+    location = location.downcase
+    known_location = KnownLocation.where(type: type).only(:name).pluck(:name).select { |name| location.include? name }.first
+
     if known_location.present?
-      return known_location.name.capitalize
+      return known_location.capitalize
     else
       return nil
     end
@@ -30,6 +32,7 @@ class KnownLocation
 
   def self.guess_known_location(location, type)
     return nil if location.blank?
+    location.gsub!('psi', '') # Quick fix for wit/location taking 'psi' as location name
 
     jarow = FuzzyStringMatch::JaroWinkler.create(:native)
 
