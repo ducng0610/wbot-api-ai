@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    RubyInline (3.12.4)
+      ZenTest (~> 4.3)
+    ZenTest (4.11.1)
     actioncable (5.0.1)
       actionpack (= 5.0.1)
       nio4r (~> 1.2)
@@ -65,6 +68,8 @@ GEM
     ffi (1.9.14)
     figaro (1.1.1)
       thor (~> 0.14)
+    fuzzy-string-match (0.9.7)
+      RubyInline (>= 3.8.6)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     haml (4.0.7)
@@ -220,6 +225,7 @@ DEPENDENCIES
   erb2haml
   facebook-messenger
   figaro
+  fuzzy-string-match
   haml
   jbuilder (~> 2.5)
   jquery-rails

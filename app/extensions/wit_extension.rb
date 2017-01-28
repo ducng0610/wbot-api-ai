@@ -24,7 +24,7 @@ class WitExtension
         end
 
         # Send the message back to facebook user
-        MessageDigestor.digest(message, @conversation.uid)
+        message.digest
       end,
 
       getForecast:

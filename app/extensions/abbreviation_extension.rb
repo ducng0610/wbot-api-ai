@@ -9,7 +9,7 @@ class AbbreviationExtension
         'rNO'
       when /south/
         'rSO'
-      when /central/, /center/
+      when /central/, /center/, /centre/
         'rCE'
       when /west/
         'rWE'
@@ -26,7 +26,7 @@ class AbbreviationExtension
         'wxnorth'
       when /south/
         'wxsouth'
-      when /central/, /center/
+      when /central/, /center/, /centre/
         'wxcentral'
       when /west/
         'wxwest'
@@ -37,7 +37,7 @@ class AbbreviationExtension
       end
     end
 
-    def decode_region(location)
+    def decode_region_24HoursForecast(location)
       location[2,5].capitalize
     end
 

@@ -24,7 +24,7 @@ class WeatherExtension
 
       elements = []
       elements << {
-        title: "24 Hour Forecast (#{AbbreviationExtension.decode_region(location)} Region)",
+        title: "24 Hour Forecast (#{AbbreviationExtension.decode_region_24HoursForecast(location)} Region)",
         image_url: 'http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg',
         subtitle: 'Meteorological Service Singapore',
         default_action: {
