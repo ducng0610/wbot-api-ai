@@ -13,8 +13,14 @@ Bot.on :message do |message|
   # message.sent_at     # => 2016-04-22 21:30:36 +0200
   # message.text        # => 'Hello, bot!'
 
+  if message.text.nil?
+    message_text = KnownLocation.guess_known_location_by_coordinates(message.attachments.first['payload']['coordinates'].values)
+  else
+    message_text = message.text
+  end
+
   puts "[debuz] got from Facebook... #{message.text}"
-  ChatExtension.response(message.text, message.sender['id'])
+  ChatExtension.response(message_text, message.sender['id'])
 end
 
 Bot.on :postback do |postback|
@@ -25,6 +31,7 @@ Bot.on :postback do |postback|
 
   if postback.payload == 'DEVELOPER_DEFINED_PAYLOAD_FOR_HELP'
     puts "[debuz] Human #{postback.recipient} marked for extermination"
+
     Bot.deliver(
       {
         recipient: postback.sender,
