@@ -40,7 +40,7 @@ class WeatherExtension
         forecast = forecast_raw_data['channel'].to_a[index][1]
         elements << {
           title: AbbreviationExtension.get_forecast_meaning(forecast[location]),
-          image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
+          # image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
           subtitle: forecast['timePeriod']
         }
       end
