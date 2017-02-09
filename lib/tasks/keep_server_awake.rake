@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :keep_server_awake do
   desc 'keep_server_awake'
   task go: :environment do

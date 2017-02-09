@@ -31,9 +31,7 @@ class WitExtension
         lambda do |request|
           context = request['context']
           entities = request['entities']
-
           location = first_entity_value(entities, 'location') || context['location']
-          # intent = first_entity_value(entities, 'intent') || context['intent']
 
           known_location = KnownLocation.get_known_location(location, 'location')
           if known_location
@@ -64,9 +62,7 @@ class WitExtension
         lambda do |request|
           context = request['context']
           entities = request['entities']
-
           location = first_entity_value(entities, 'location') || context['location']
-          # intent = first_entity_value(entities, 'intent') || context['intent']
 
           known_location = KnownLocation.get_known_location(location, 'region')
           if known_location
@@ -92,9 +88,7 @@ class WitExtension
         lambda do |request|
           context = request['context']
           entities = request['entities']
-
           location = first_entity_value(entities, 'location') || context['location']
-          # intent = first_entity_value(entities, 'intent') || context['intent']
 
           known_location = KnownLocation.get_known_location(location, 'region')
           if known_location
