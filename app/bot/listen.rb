@@ -13,18 +13,19 @@ Bot.on :message do |message|
   # message.sent_at     # => 2016-04-22 21:30:36 +0200
   # message.text        # => 'Hello, bot!'
 
-  begin
-    if message.text.nil?
-      message_text = KnownLocation.guess_known_location_by_coordinates(message.attachments.first['payload']['coordinates'].values)
-    else
-      message_text = message.text
-    end
+  message_text = message.text
 
+  if message_text.nil?
+    begin
+      message_text = KnownLocation.guess_known_location_by_coordinates(message.attachments.first['payload']['coordinates'].values)
+    rescue => e
+      puts '[debuz] got unhandlable facebook message: ' + e.message + ' :@: ' + message.to_json
+    end
+  end
+
+  unless message_text.nil?
     puts "[debuz] got from Facebook... #{message.text}"
     ChatExtension.response(message_text, message.sender['id'])
-
-  rescue => e
-    puts '[debuz] got unhandlable message: ' + e.message + ' :@: ' + message.to_json
   end
 end
 

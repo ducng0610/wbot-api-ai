@@ -89,6 +89,8 @@ class WeatherExtension
           return Hash.from_xml(response.body).as_json
         else
           puts "[debuz] got external API error: #{response.body}"
+          WitExtension.instance.set_custom_response('Sorry, something is going wrong with our external info provider... Please try again later')
+          return nil
         end
       end
     end

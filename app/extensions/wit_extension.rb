@@ -6,20 +6,25 @@ class WitExtension
   include Singleton
 
   def initialize
-    access_token = ENV['server_access_token']
     actions = {
       send: lambda do |_request, response|
         puts("[debuz] got response... #{response['text']}")
 
-        message = Message.create(body: response['text'], kind: 'outgoing', conversation: @conversation)
-        if response['quickreplies'].present?
-          response['quickreplies'].each do |quick_reply|
-            QuickReply.create(
-              title: quick_reply,
-              content_type: 'text',
-              payload: 'empty',
-              message: message
-            )
+        if @custom_response
+          puts("[debuz] custom response... #{@custom_response}")
+          message = Message.create(body: @custom_response, kind: 'outgoing', conversation: @conversation)
+          @custom_response = nil
+        else
+          message = Message.create(body: response['text'], kind: 'outgoing', conversation: @conversation)
+          if response['quickreplies'].present?
+            response['quickreplies'].each do |quick_reply|
+              QuickReply.create(
+                title: quick_reply,
+                content_type: 'text',
+                payload: 'empty',
+                message: message
+              )
+            end
           end
         end
 
@@ -29,95 +34,21 @@ class WitExtension
 
       getForecast:
         lambda do |request|
-          context = request['context']
-          entities = request['entities']
-          location = first_entity_value(entities, 'location') || context['location']
-
-          known_location = KnownLocation.get_known_location(location, 'location')
-          if known_location
-            location = known_location
-            context['location'] = known_location
-          else
-            location = KnownLocation.guess_known_location(location, 'location')
-            context['guess_location'] = location
-          end
-
-          if location
-            forecast = search_forecast(location)
-            if forecast.present?
-              context['forecast'] = forecast
-            else
-              context['missingData'] = 'true'
-            end
-            new_context = {}
-          else
-            new_context = context
-          end
-
-          @conversation.update(context: new_context)
-          return context
+          return handle_request(request, 'location')
         end,
 
       get24HoursForecast:
         lambda do |request|
-          context = request['context']
-          entities = request['entities']
-          location = first_entity_value(entities, 'location') || context['location']
-
-          known_location = KnownLocation.get_known_location(location, 'region')
-          if known_location
-            location = known_location
-            context['location'] = known_location
-          else
-            location = KnownLocation.guess_known_location(location, 'region')
-            context['guess_location'] = location
-          end
-
-          if location
-            context['24HoursForecast'] = search_24HoursForecast(location)
-            new_context = {}
-          else
-            new_context = context
-          end
-
-          @conversation.update(context: new_context)
-          return context
+          return handle_request(request, 'region')
         end,
 
       getPsi:
         lambda do |request|
-          context = request['context']
-          entities = request['entities']
-          location = first_entity_value(entities, 'location') || context['location']
-
-          known_location = KnownLocation.get_known_location(location, 'region')
-          if known_location
-            location = known_location
-            context['location'] = known_location
-          else
-            location = KnownLocation.guess_known_location(location, 'region')
-            context['guess_location'] = location
-          end
-
-          if location
-            hour_psi = search_hour_psi(location)
-            day_psi = search_day_psi(location)
-            if hour_psi.present? && day_psi.present?
-              context['hour_psi'] = hour_psi
-              context['day_psi'] = day_psi
-            else
-              context['missingData'] = 'true'
-            end
-            new_context = {}
-          else
-            new_context = context
-          end
-
-          @conversation.update(context: new_context)
-          return context
+          return handle_request(request, 'region')
         end
     }
 
+    access_token = ENV['server_access_token']
     @client = Wit.new(access_token: access_token, actions: actions)
   end
 
@@ -125,6 +56,10 @@ class WitExtension
 
   def set_conversation(conversation)
     @conversation = conversation
+  end
+
+  def set_custom_response(custom_response)
+    @custom_response = custom_response
   end
 
   private
@@ -136,23 +71,80 @@ class WitExtension
     val.is_a?(Hash) ? val['value'] : val
   end
 
-  def search_forecast(location)
+  def handle_request(request, location_type)
+    context = request['context']
+    entities = request['entities']
+    location = first_entity_value(entities, 'location') || context['location']
+    intent = first_entity_value(entities, 'intent') || context['intent']
+
+    known_location = KnownLocation.get_known_location(location, location_type)
+    if known_location
+      location = known_location
+      context['location'] = known_location
+    else
+      location = KnownLocation.guess_known_location(location, location_type)
+      context['guess_location'] = location
+    end
+
+    if location
+      case intent
+      when 'weather'
+        context = search_forecast(location, context)
+      when 'forecast'
+        context = search_24HoursForecast(location, context)
+      when 'psi'
+        context = search_psi(location, context)
+      else
+      end
+
+      new_context = {}
+    else
+      new_context = context
+    end
+
+    @conversation.update(context: new_context)
+    context
+  end
+
+  def search_forecast(location, context)
     puts "[debuz] Searching for weather in #{location} ..."
-    WeatherExtension.search_forecast(location)
+    forecast = WeatherExtension.search_forecast(location)
+    if forecast.present?
+      context['forecast'] = forecast
+    else
+      no_data_found
+    end
+
+    context
   end
 
-  def search_24HoursForecast(location)
+  def search_24HoursForecast(location, context)
     puts '[debuz] Searching for 24-hour forecast #{location} ...'
-    WeatherExtension.search_24HoursForecast(location)
+    forecast = WeatherExtension.search_24HoursForecast(location)
+    if forecast.present?
+      context['24HoursForecast'] = forecast
+    else
+      no_data_found
+    end
+
+    context
   end
 
-  def search_hour_psi(location)
-    puts "[debuz] Searching for hour_psi forecast in #{location} ..."
-    WeatherExtension.search_hour_psi(location)
+  def search_psi(location, context)
+    puts "[debuz] Searching for psi forecast in #{location} ..."
+    hour_psi = WeatherExtension.search_hour_psi(location)
+    day_psi = WeatherExtension.search_day_psi(location)
+    if hour_psi.present? && day_psi.present?
+      context['hour_psi'] = hour_psi
+      context['day_psi'] = day_psi
+    else
+      no_data_found
+    end
+
+    context
   end
 
-  def search_day_psi(location)
-    puts "[debuz] Searching for day_psi forecast in #{location} ..."
-    WeatherExtension.search_day_psi(location)
+  def no_data_found
+    # TODO
   end
 end
