@@ -34,17 +34,17 @@ class WitExtension
 
       getForecast:
         lambda do |request|
-          return handle_request(request, 'location')
+          return handle_request(request, 'location', 'getForecast')
         end,
 
       get24HoursForecast:
         lambda do |request|
-          return handle_request(request, 'region')
+          return handle_request(request, 'region', 'get24HoursForecast')
         end,
 
       getPsi:
         lambda do |request|
-          return handle_request(request, 'region')
+          return handle_request(request, 'region', 'getPsi')
         end
     }
 
@@ -71,11 +71,11 @@ class WitExtension
     val.is_a?(Hash) ? val['value'] : val
   end
 
-  def handle_request(request, location_type)
+  def handle_request(request, location_type, action)
     context = request['context']
     entities = request['entities']
     location = first_entity_value(entities, 'location') || context['location']
-    intent = first_entity_value(entities, 'intent') || context['intent']
+    # intent = first_entity_value(entities, 'intent') || context['intent']
 
     known_location = KnownLocation.get_known_location(location, location_type)
     if known_location
@@ -87,12 +87,12 @@ class WitExtension
     end
 
     if location
-      case intent
-      when 'weather'
+      case action
+      when 'getForecast'
         context = search_forecast(location, context)
-      when 'forecast'
+      when 'get24HoursForecast'
         context = search_24HoursForecast(location, context)
-      when 'psi'
+      when 'getPsi'
         context = search_psi(location, context)
       else
       end
