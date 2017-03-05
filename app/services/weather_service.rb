@@ -31,7 +31,7 @@ class WeatherService
         default_action: {
           type: 'web_url',
           url: 'https://robusttechhouse.com/',
-          messenger_Services: true,
+          messenger_extensions: true,
           webview_height_ratio: 'tall',
           fallback_url: 'https://robusttechhouse.com/'
         }
