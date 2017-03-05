@@ -17,7 +17,7 @@ class ChatService
       @response_message = api_ai_response_message
       @quick_replies = case action
                        when 'ask.current.weather'
-                         ['location@#$']
+                         ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map{ |kl| kl.name.capitalize }
                        when 'ask.psi', 'ask.weather.forecast'
                          %w(North West East South Central)
                        end
