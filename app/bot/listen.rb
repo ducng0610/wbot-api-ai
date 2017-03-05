@@ -29,7 +29,7 @@ Bot.on :message do |message|
     puts "[debuz] got from Facebook... #{message.text}"
     chat_service = ChatService.new(uid)
     chat_service.execute(message_text)
-    FacebookMessengerService.deliver(chat_service.response_message, chat_service.quick_replies, uid)
+    FacebookMessengerService.deliver(chat_service.response_message, chat_service.quick_replies, chat_service.response_template, uid)
   end
 end
 

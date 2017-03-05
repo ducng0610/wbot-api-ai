@@ -24,19 +24,19 @@ class ChatService
       return
     end
 
-    @response_message = case action
-                        when 'ask.current.weather'
-                          search_forecast(api_ai_response[:result][:parameters][:location])
-                        when 'ask.psi'
-                          search_psi(api_ai_response[:result][:parameters][:region])
-                        when 'ask.weather.forecast'
-                          search_24HoursForecast(api_ai_response[:result][:parameters][:region])
-                        else
-                          api_ai_response_message
-                        end
+    case action
+    when 'ask.current.weather'
+      @response_message = search_forecast(api_ai_response[:result][:parameters][:location])
+    when 'ask.psi'
+      @response_message = search_psi(api_ai_response[:result][:parameters][:region])
+    when 'ask.weather.forecast'
+      @response_template = search_24HoursForecast(api_ai_response[:result][:parameters][:region])
+    else
+      @response_message = api_ai_response_message
+    end
   end
 
-  attr_reader :response_message, :quick_replies
+  attr_reader :response_message, :quick_replies, :response_template
 
   private
 

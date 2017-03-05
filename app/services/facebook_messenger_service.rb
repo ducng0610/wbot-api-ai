@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 class FacebookMessengerService
   class << self
-    def deliver(message, quick_replies = nil, uid)
+    def deliver(message, quick_replies, template, uid)
       puts "[debuz] sending '#{message}' to user '#{uid}'"
 
-      if quick_replies.present?
-        quick_replies = quick_replies.map { |qr| qr == 'location@#$' ? { content_type: 'location' } : { title: qr, content_type: 'text', payload: 'empty' } }
+      if template
+        message_content = JSON.parse(template)
+      else
+        if quick_replies.present?
+          quick_replies = quick_replies.map { |qr| qr == 'location@#$' ? { content_type: 'location' } : { title: qr, content_type: 'text', payload: 'empty' } }
+        end
+        message_content = {
+          text: message,
+          quick_replies: quick_replies ? quick_replies : nil
+        }
       end
 
       begin
@@ -14,10 +22,7 @@ class FacebookMessengerService
             recipient: {
               id: uid
             },
-            message: {
-              text: message,
-              quick_replies: quick_replies ? quick_replies : nil
-            }
+            message: message_content
           },
           access_token: ENV['ACCESS_TOKEN']
         )
