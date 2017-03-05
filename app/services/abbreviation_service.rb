@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class AbbreviationExtension
+class AbbreviationService
   class << self
     def encode_region(location)
       case location.downcase
