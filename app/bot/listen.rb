@@ -20,6 +20,9 @@ Bot.on :message do |message|
   if message_text.nil?
     begin
       message_text = KnownLocation.guess_known_location_by_coordinates(message.attachments.first['payload']['coordinates'].values)
+      if message_text.nil?
+        FacebookMessengerService.deliver(uid, 'Sorry, currently I can only support Singapore locations.')
+      end
     rescue => e
       puts '[debuz] got unhandlable facebook message: ' + e.message + ' :@: ' + message.to_json
     end
@@ -29,7 +32,7 @@ Bot.on :message do |message|
     puts "[debuz] got from Facebook... #{message.text}"
     chat_service = ChatService.new(uid)
     chat_service.execute(message_text)
-    FacebookMessengerService.deliver(chat_service.response_message, chat_service.quick_replies, chat_service.response_template, uid)
+    FacebookMessengerService.deliver(uid, chat_service.response_message, chat_service.quick_replies, chat_service.response_template)
   end
 end
 

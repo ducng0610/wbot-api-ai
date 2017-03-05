@@ -53,6 +53,9 @@ class KnownLocation
 
   def self.guess_known_location_by_coordinates(coordinates)
     known_location = KnownLocation.where(type: 'location').min_by { |loc| distance(coordinates, [loc.lat, loc.lon]) }
+
+    # exclude if the location is above 100km away
+    return nil if distance(coordinates, [known_location.lat, known_location.lon]) > 100000
     known_location.name
   end
 

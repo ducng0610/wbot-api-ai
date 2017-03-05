@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class FacebookMessengerService
   class << self
-    def deliver(message, quick_replies, template, uid)
+    def deliver(uid, message, quick_replies = nil, template = nil)
       puts "[debuz] sending '#{message}' to user '#{uid}'"
 
       if template
