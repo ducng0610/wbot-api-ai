@@ -25,7 +25,8 @@ Bot.on :message do |message|
 
   unless message_text.nil?
     puts "[debuz] got from Facebook... #{message.text}"
-    ChatExtension.response(message_text, message.sender['id'])
+    chat_service = ChatService.new(message.sender['id'])
+    chat_service.response(message_text)
   end
 end
 

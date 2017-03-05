@@ -9,7 +9,7 @@ class Api::ChatController < ApplicationController
     validate_message_params
     set_conversation
     create_incoming_message(params[:message])
-    WitExtension.instance.client.run_actions(@conversation.uid, params[:message], @conversation.context.to_h)
+    WitService.instance.client.run_actions(@conversation.uid, params[:message], @conversation.context.to_h)
 
     render json: @conversation.messages.order(created_at: :asc).last
   end
@@ -23,7 +23,7 @@ class Api::ChatController < ApplicationController
 
   def create_conversation
     @conversation = Conversation.create(uid: Time.now.to_i)
-    WitExtension.instance.set_conversation(@conversation)
+    WitService.instance.set_conversation(@conversation)
   end
 
   def create_incoming_message(message)
@@ -39,6 +39,6 @@ class Api::ChatController < ApplicationController
 
   def set_conversation
     @conversation = Conversation.find_by(uid: params[:uid])
-    WitExtension.instance.set_conversation(@conversation)
+    WitService.instance.set_conversation(@conversation)
   end
 end

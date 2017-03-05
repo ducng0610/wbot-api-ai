@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class WeatherExtension
+class WeatherService
   class << self
     def search_forecast(location)
       dataset = '2hr_nowcast'
@@ -9,7 +9,7 @@ class WeatherExtension
 
       forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].casecmp(location.downcase).zero? }.first
       if forecast_data_needed.present?
-        AbbreviationExtension.get_forecast_meaning(forecast_data_needed['forecast'])
+        AbbreviationService.get_forecast_meaning(forecast_data_needed['forecast'])
       end
     end
 
@@ -19,18 +19,18 @@ class WeatherExtension
 
       return nil if forecast_raw_data.nil?
 
-      location = AbbreviationExtension.encode_region_24HoursForecast(location)
+      location = AbbreviationService.encode_region_24HoursForecast(location)
       return nil if location.blank?
 
       elements = []
       elements << {
-        title: "24 Hour Forecast (#{AbbreviationExtension.decode_region_24HoursForecast(location)} Region)",
+        title: "24 Hour Forecast (#{AbbreviationService.decode_region_24HoursForecast(location)} Region)",
         image_url: 'http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg',
         subtitle: 'Meteorological Service Singapore',
         default_action: {
           type: 'web_url',
           url: 'https://robusttechhouse.com/',
-          messenger_extensions: true,
+          messenger_Services: true,
           webview_height_ratio: 'tall',
           fallback_url: 'https://robusttechhouse.com/'
         }
@@ -39,7 +39,7 @@ class WeatherExtension
       (3..5).each do |index|
         forecast = forecast_raw_data['channel'].to_a[index][1]
         elements << {
-          title: AbbreviationExtension.get_forecast_meaning(forecast[location]),
+          title: AbbreviationService.get_forecast_meaning(forecast[location]),
           # image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
           subtitle: forecast['timePeriod']
         }
@@ -63,7 +63,7 @@ class WeatherExtension
       forecast_raw_data = search(dataset)
 
       begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationExtension.encode_region(location).downcase).zero? }.first['record']['reading']['value']
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(location).downcase).zero? }.first['record']['reading']['value']
       rescue
       end
     end
@@ -73,7 +73,7 @@ class WeatherExtension
       forecast_raw_data = search(dataset)
 
       begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationExtension.encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
+        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
       rescue
       end
     end
@@ -89,7 +89,7 @@ class WeatherExtension
           return Hash.from_xml(response.body).as_json
         else
           puts "[debuz] got external API error: #{response.body}"
-          WitExtension.instance.set_custom_response('Sorry, something is going wrong with our external info provider... Please try again later')
+          WitService.instance.set_custom_response('Sorry, something is going wrong with our external info provider... Please try again later')
           return nil
         end
       end

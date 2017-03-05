@@ -2,7 +2,7 @@
 require 'wit'
 require 'singleton'
 
-class WitExtension
+class WitService
   include Singleton
 
   def initialize
@@ -108,7 +108,7 @@ class WitExtension
 
   def search_forecast(location, context)
     puts "[debuz] Searching for weather in #{location} ..."
-    forecast = WeatherExtension.search_forecast(location)
+    forecast = WeatherService.search_forecast(location)
     if forecast.present?
       context['forecast'] = forecast
     else
@@ -120,7 +120,7 @@ class WitExtension
 
   def search_24HoursForecast(location, context)
     puts '[debuz] Searching for 24-hour forecast #{location} ...'
-    forecast = WeatherExtension.search_24HoursForecast(location)
+    forecast = WeatherService.search_24HoursForecast(location)
     if forecast.present?
       context['24HoursForecast'] = forecast
     else
@@ -132,8 +132,8 @@ class WitExtension
 
   def search_psi(location, context)
     puts "[debuz] Searching for psi forecast in #{location} ..."
-    hour_psi = WeatherExtension.search_hour_psi(location)
-    day_psi = WeatherExtension.search_day_psi(location)
+    hour_psi = WeatherService.search_hour_psi(location)
+    day_psi = WeatherService.search_day_psi(location)
     if hour_psi.present? && day_psi.present?
       context['hour_psi'] = hour_psi
       context['day_psi'] = day_psi
