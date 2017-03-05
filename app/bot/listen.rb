@@ -14,7 +14,9 @@ Bot.on :message do |message|
   # message.text        # => 'Hello, bot!'
 
   message_text = message.text
+  uid = message.sender['id']
 
+  # handle `share location` facebook message
   if message_text.nil?
     begin
       message_text = KnownLocation.guess_known_location_by_coordinates(message.attachments.first['payload']['coordinates'].values)
@@ -25,8 +27,9 @@ Bot.on :message do |message|
 
   unless message_text.nil?
     puts "[debuz] got from Facebook... #{message.text}"
-    chat_service = ChatService.new(message.sender['id'])
-    chat_service.response(message_text)
+    chat_service = ChatService.new(uid)
+    chat_service.execute(message_text)
+    FacebookMessengerService.deliver(chat_service.response_message, chat_service.quick_replies, uid)
   end
 end
 

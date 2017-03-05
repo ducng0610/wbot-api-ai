@@ -4,27 +4,28 @@ class WeatherService
     def search_forecast(location)
       dataset = '2hr_nowcast'
       forecast_raw_data = search(dataset)
-
-      return nil if forecast_raw_data.nil?
+      return external_api_error if forecast_raw_data.nil?
 
       forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].casecmp(location.downcase).zero? }.first
       if forecast_data_needed.present?
-        AbbreviationService.get_forecast_meaning(forecast_data_needed['forecast'])
+        forecast = AbbreviationService.get_forecast_meaning(forecast_data_needed['forecast'])
+        "The weather in #{location} is going to be #{forecast}"
+      else
+        no_data_found
       end
     end
 
-    def search_24HoursForecast(location)
+    def search_24HoursForecast(region)
+      region = AbbreviationService.encode_region_24HoursForecast(region)
+      return no_data_found if region.blank?
+
       dataset = '24hrs_forecast'
       forecast_raw_data = search(dataset)
-
-      return nil if forecast_raw_data.nil?
-
-      location = AbbreviationService.encode_region_24HoursForecast(location)
-      return nil if location.blank?
+      return external_api_error if forecast_raw_data.nil?
 
       elements = []
       elements << {
-        title: "24 Hour Forecast (#{AbbreviationService.decode_region_24HoursForecast(location)} Region)",
+        title: "24 Hour Forecast (#{AbbreviationService.decode_region_24HoursForecast(region)} Region)",
         image_url: 'http://duhoctoancau.com/wp-content/uploads/2016/12/trung-tam-tu-van-du-hoc-singapore-3.jpg',
         subtitle: 'Meteorological Service Singapore',
         default_action: {
@@ -39,8 +40,7 @@ class WeatherService
       (3..5).each do |index|
         forecast = forecast_raw_data['channel'].to_a[index][1]
         elements << {
-          title: AbbreviationService.get_forecast_meaning(forecast[location]),
-          # image_url: 'https://robusttechhouse.com/wp-content/uploads/2016/02/RTH-Logo-transparent-background.png',
+          title: AbbreviationService.get_forecast_meaning(forecast[region]),
           subtitle: forecast['timePeriod']
         }
       end
@@ -58,23 +58,19 @@ class WeatherService
       response.to_json
     end
 
-    def search_hour_psi(location)
-      dataset = 'pm2.5_update'
-      forecast_raw_data = search(dataset)
+    def search_psi(region)
+      hour_dataset = 'pm2.5_update'
+      hour_forecast_raw_data = search(hour_dataset)
+      day_dataset = 'psi_update'
+      day_forecast_raw_data = search(day_dataset)
+      return external_api_error if hour_forecast_raw_data.nil? || day_forecast_raw_data.nil?
 
       begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(location).downcase).zero? }.first['record']['reading']['value']
+        hour_psi = hour_forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(region).downcase).zero? }.first['record']['reading']['value']
+        day_psi = day_forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(region).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
+        "The hourly PM2.5 in the #{region} region is #{hour_psi} and the 24 hour PSI is #{day_psi}"
       rescue
-      end
-    end
-
-    def search_day_psi(location)
-      dataset = 'psi_update'
-      forecast_raw_data = search(dataset)
-
-      begin
-        forecast_raw_data['channel']['item']['region'].select { |ae| ae['id'].casecmp(AbbreviationService.encode_region(location).downcase).zero? }.first['record']['reading'].select { |ae| ae['type'].casecmp('NPSI').zero? }.first['value']
-      rescue
+        no_data_found
       end
     end
 
@@ -89,7 +85,6 @@ class WeatherService
           return Hash.from_xml(response.body).as_json
         else
           puts "[debuz] got external API error: #{response.body}"
-          WitService.instance.set_custom_response('Sorry, something is going wrong with our external info provider... Please try again later')
           return nil
         end
       end
@@ -97,6 +92,14 @@ class WeatherService
 
     def get_url(dataset)
       'http://api.nea.gov.sg/api/WebAPI/?dataset=' + dataset + '&keyref=' + ENV['WEATHER_API_KEYREF']
+    end
+
+    def no_data_found
+      'Sorry, I do not have data about the place you are asking for...'
+    end
+
+    def external_api_error
+      'Sorry, something is going wrong with our external info provider... Please try again later'
     end
   end
 end

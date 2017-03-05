@@ -35,18 +35,18 @@ class Message
   private
 
   def deliver(response_message, uid)
-    begin
-      Bot.deliver(
-        {
-          recipient: {
-            id: uid
-          },
-          message: response_message
-        },
-        access_token: ENV['ACCESS_TOKEN']
-      )
-    rescue => e
-      puts '[debuz] ' + e.message
-    end
+    # begin
+    #   Bot.deliver(
+    #     {
+    #       recipient: {
+    #         id: uid
+    #       },
+    #       message: response_message
+    #     },
+    #     access_token: ENV['ACCESS_TOKEN']
+    #   )
+    # rescue => e
+    #   puts '[debuz] ' + e.message
+    # end
   end
 end

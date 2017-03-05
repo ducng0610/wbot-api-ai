@@ -5,21 +5,50 @@ class ChatService
       client_access_token: ENV['API_AI_CLIENT_ACCESS_TOKEN'],
       api_session_id: uid
     )
-    @facebook_messenger = FacebookMessengerService.new(uid)
   end
 
-  def response(message)
-    response = @client.text_request(message)
+  def execute(message)
+    api_ai_response = @client.text_request(message)
+    api_ai_response_message = api_ai_response[:result][:fulfillment][:speech]
+    action_incomplete = api_ai_response[:result][:actionIncomplete]
+    action = api_ai_response[:result][:action]
 
-    action_incomplete = response[:result][:actionIncomplete]
     if action_incomplete
-      @facebook_messenger.deliver(response[:result][:fulfillment][:speech])
+      @response_message = api_ai_response_message
+      @quick_replies = case action
+                       when 'ask.current.weather'
+                         ['location@#$']
+                       when 'ask.psi', 'ask.weather.forecast'
+                         %w(North West East South Central)
+                       end
       return
     end
 
-    action = response[:result][:action]
-    binding.pry
+    @response_message = case action
+                        when 'ask.current.weather'
+                          search_forecast(api_ai_response[:result][:parameters][:location])
+                        when 'ask.psi'
+                          search_psi(api_ai_response[:result][:parameters][:region])
+                        when 'ask.weather.forecast'
+                          search_24HoursForecast(api_ai_response[:result][:parameters][:region])
+                        else
+                          api_ai_response_message
+                        end
   end
 
+  attr_reader :response_message, :quick_replies
+
   private
+
+  def search_forecast(location)
+    WeatherService.search_forecast(location)
+  end
+
+  def search_24HoursForecast(region)
+    WeatherService.search_24HoursForecast(region)
+  end
+
+  def search_psi(region)
+    WeatherService.search_psi(region)
+  end
 end
