@@ -31,6 +31,9 @@ class ChatService
       @response_message = search_psi(api_ai_response[:result][:parameters][:region])
     when 'ask.weather.forecast'
       @response_template = search_24HoursForecast(api_ai_response[:result][:parameters][:region])
+    when 'add.help.quickreplies'
+      @response_message = api_ai_response_message
+      @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     else
       @response_message = api_ai_response_message
     end
