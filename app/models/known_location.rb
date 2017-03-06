@@ -30,26 +30,26 @@ class KnownLocation
   #   end
   # end
 
-  # def self.guess_known_location(location, type)
-  #   return nil if location.blank?
-  #   location.gsub!('psi', '') # Quick fix for wit/location taking 'psi' as location name
+  def self.guess_known_location(location, type)
+    return nil if location.blank?
+    location.gsub!('psi', '') # Quick fix for wit/location taking 'psi' as location name
 
-  #   jarow = FuzzyStringMatch::JaroWinkler.create(:native)
+    jarow = FuzzyStringMatch::JaroWinkler.create(:native)
 
-  #   location = location.downcase
-  #   known_locations = KnownLocation.where(type: type).only(:name).pluck(:name)
-  #   known_locations_with_distance = {}
-  #   known_locations.each do |known_location|
-  #     known_locations_with_distance[known_location] = jarow.getDistance(known_location, location)
-  #   end
+    location = location.downcase
+    known_locations = KnownLocation.where(type: type).only(:name).pluck(:name)
+    known_locations_with_distance = {}
+    known_locations.each do |known_location|
+      known_locations_with_distance[known_location] = jarow.getDistance(known_location, location)
+    end
 
-  #   known_location = known_locations_with_distance.max_by { |_name, distance| distance }
-  #   if known_location[1] < 0.7
-  #     return nil
-  #   else
-  #     return known_location[0].capitalize
-  #   end
-  # end
+    known_location = known_locations_with_distance.max_by { |_name, distance| distance }
+    if known_location[1] < 0.85
+      return nil
+    else
+      return known_location[0].capitalize
+    end
+  end
 
   def self.guess_known_location_by_coordinates(coordinates)
     known_location = KnownLocation.where(type: 'location').min_by { |loc| distance(coordinates, [loc.lat, loc.lon]) }

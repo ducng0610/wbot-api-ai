@@ -9,9 +9,11 @@ class WeatherService
       forecast_data_needed = forecast_raw_data['channel']['item']['weatherForecast']['area'].select { |ae| ae['name'].casecmp(location.downcase).zero? }.first
       if forecast_data_needed.present?
         forecast = AbbreviationService.get_forecast_meaning(forecast_data_needed['forecast'])
-        "The weather in #{location} is going to be #{forecast}"
+        date = forecast_raw_data['channel']['item']['forecastIssue']['date']
+        valid_time = forecast_raw_data['channel']['item']['validTime']
+        "The current weather in #{location} is #{forecast} (valid from #{valid_time} on #{date})"
       else
-        no_data_found
+        no_data_found(location)
       end
     end
 
@@ -94,8 +96,12 @@ class WeatherService
       'http://api.nea.gov.sg/api/WebAPI/?dataset=' + dataset + '&keyref=' + ENV['WEATHER_API_KEYREF']
     end
 
-    def no_data_found
-      'Sorry, I do not have data about the place you are asking for...'
+    def no_data_found(location = nil)
+      if location && guess_location = KnownLocation.guess_known_location(location, 'location')
+        "Sorry, I don't know about #{location}, do you mean #{guess_location}?"
+      else
+        'Sorry, I do not have data about the place you are asking for...'
+      end
     end
 
     def external_api_error
