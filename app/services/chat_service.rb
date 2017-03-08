@@ -24,6 +24,8 @@ class ChatService
       return
     end
 
+    # if action is complete, move to backend logic to handle request
+
     case action
     when 'ask.current.weather'
       @response_message = search_forecast(api_ai_response[:result][:parameters][:location])
@@ -36,6 +38,12 @@ class ChatService
       @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     else
       @response_message = api_ai_response_message
+    end
+
+    case action
+    when 'ask.current.weather', 'ask.psi', 'add.help.quickreplies'
+      @follow_up_response_message = 'Can I help with with other weather information?'
+      @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     end
   end
 

@@ -34,6 +34,9 @@ Bot.on :message do |message|
     chat_service = ChatService.new(uid)
     chat_service.execute(request_message)
     FacebookMessengerService.deliver(uid, chat_service.response_message, chat_service.quick_replies, chat_service.response_template)
+    if chat_service.follow_up_response_message.present?
+      FacebookMessengerService.deliver(uid, chat_service.follow_up_response_message, chat_service.quick_replies)
+    end
   end
 end
 

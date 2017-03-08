@@ -5,6 +5,7 @@ class Api::ChatController < ApplicationController
     chat_service.execute(params[:message])
     render json: { response_message: chat_service.response_message,
                    response_template: chat_service.response_template,
-                   quick_replies: chat_service.quick_replies }
+                   quick_replies: chat_service.quick_replies,
+                   follow_up_response_message: chat_service.follow_up_response_message }
   end
 end
