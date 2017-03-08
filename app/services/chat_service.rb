@@ -41,13 +41,13 @@ class ChatService
     end
 
     case action
-    when 'ask.current.weather', 'ask.psi', 'add.help.quickreplies'
-      @follow_up_response_message = 'Can I help with with other weather information?'
+    when 'ask.current.weather', 'ask.psi', 'ask.weather.forecast'
+      @follow_up_response_message = 'Can I help you with other weather information?'
       @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     end
   end
 
-  attr_reader :response_message, :quick_replies, :response_template
+  attr_reader :response_message, :quick_replies, :response_template, :follow_up_response_message
 
   private
 

@@ -98,7 +98,7 @@ class WeatherService
 
     def no_data_found(location = nil)
       if location && guess_location = KnownLocation.guess_known_location(location, 'location')
-        "Sorry, I don't know about #{location}, do you mean #{guess_location}?"
+        "Sorry, I don't know about #{location}, maybe you want to try #{guess_location}?"
       else
         'Sorry, I do not have data about the location you are asking for...'
       end
