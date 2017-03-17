@@ -46,11 +46,19 @@ Bot.on :postback do |postback|
   # postback.sent_at   # => 2016-04-22 21:30:36 +0200
   # postback.payload   # => 'EXTERMINATE'
 
-  if postback.payload == 'DEVELOPER_DEFINED_PAYLOAD_FOR_HELP'
-    puts "[debuz] Human #{postback.recipient} marked for extermination"
+  case postback.payload
+  when 'DEVELOPER_DEFINED_PAYLOAD_FOR_HELP'
+    puts "[debuz] Human #{postback.recipient} marked for extermination: DEVELOPER_DEFINED_PAYLOAD_FOR_HELP"
 
     uid = postback.sender['id']
-    message = 'I can tell you the (1) Current Weather (2) 24-Hour Forecast (3) PSI in different locations in Singapore. For example, you can ask me "What is the weather in Changi?"; "Is it raining in Bedok?"; "What is the forecast in the South?" or "What is the PSI in the North?"'
+    message = 'I can tell you the Current Weather, 24-Hour Forecast and PSI in different locations in Singapore. For example, you can ask me "What is the weather in Changi?"; "Is it raining in Bedok?"; "What is the forecast in the South?" or "What is the PSI in the North?"'
+    quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
+    FacebookMessengerService.deliver(uid, message, quick_replies)
+  when 'GET_STARTED'
+    puts "[debuz] Human #{postback.recipient} marked for extermination: GET_STARTED"
+
+    uid = postback.sender['id']
+    message = 'Hi, This is WeatherBot. How can I help you?'
     quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     FacebookMessengerService.deliver(uid, message, quick_replies)
   end
