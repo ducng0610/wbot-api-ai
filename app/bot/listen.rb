@@ -15,7 +15,7 @@ Bot.on :message do |message|
 
   request_message = message.text
   uid = message.sender['id']
-  User.create(uid: uid)
+  User.find_or_create_by(uid: uid)
 
   # handle `share location` facebook message
   if request_message.nil?
