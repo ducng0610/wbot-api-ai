@@ -4,6 +4,10 @@ class User
 
   field :uid, type: String
   field :email, type: String
+  field :telegram_id, type: String
+  field :first_name, type: String
+  field :last_name, type: String
 
   validates_uniqueness_of :uid
+  validates_uniqueness_of :telegram_id
 end

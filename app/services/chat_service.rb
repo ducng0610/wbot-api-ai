@@ -33,6 +33,8 @@ class ChatService
       @response_message = search_psi(api_ai_response[:result][:parameters][:region])
     when 'ask.weather.forecast'
       @response_template = search_24HoursForecast(api_ai_response[:result][:parameters][:region])
+      # This is for telegram only, because Telegram cannot display facebook template
+      @response_message = translate_24h_forecast_template_to_message(@response_template)
     when 'add.help.quickreplies'
       @response_message = api_ai_response_message
       @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
@@ -61,5 +63,10 @@ class ChatService
 
   def search_psi(region)
     WeatherService.search_psi(region)
+  end
+
+  def translate_24h_forecast_template_to_message(template_str)
+    template = JSON.parse(template_str)
+    template['attachment']['payload']['elements'].last(3).map{ |w| w.values.join(' (') }.join('). ')
   end
 end
