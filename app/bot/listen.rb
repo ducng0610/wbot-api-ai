@@ -30,7 +30,7 @@ Bot.on :message do |message|
   end
 
   unless request_message.nil?
-    puts "[debuz] got from Facebook... #{message.text}"
+    puts "[debuz] got from Facebook... #{request_message}"
     chat_service = ChatService.new(uid)
     chat_service.execute(request_message)
     FacebookMessengerService.deliver(uid, chat_service.response_message, chat_service.quick_replies, chat_service.response_template)

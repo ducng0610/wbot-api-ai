@@ -64,3 +64,4 @@ gem 'rest-client'
 
 # A fuzzy string matching library for ruby, supports only Jaro-Winkler distance algorithm
 gem 'fuzzy-string-match'
+gem 'telegram-bot-ruby'
