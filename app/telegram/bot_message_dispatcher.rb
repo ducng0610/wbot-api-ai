@@ -22,9 +22,9 @@ class BotMessageDispatcher
         puts "[debuz] got from Telegram... #{request_message}"
         chat_service = ChatService.new(uid)
         chat_service.execute(request_message)
-        send_message(chat_service.response_message)
+        send_message(chat_service.response_message, chat_service.quick_replies)
         if chat_service.follow_up_response_message.present?
-          send_message(chat_service.follow_up_response_message)
+          send_message(chat_service.follow_up_response_message, chat_service.quick_replies)
         end
       end
     end
@@ -36,16 +36,24 @@ class BotMessageDispatcher
     case request_message
     when '/start'
       message = 'Hi, This is WeatherBot. How can I help you?'
+      quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     when '/stop'
       message = 'Sorry to see you go :('
     else
       message = 'Unknown command. :)'
     end
 
-    send_message(message)
+    send_message(message, quick_replies)
   end
 
-  def send_message(text, options={})
-    @api.call('sendMessage', chat_id: @user.telegram_id, text: text)
+  def send_message(text, quick_replies = nil)
+    if quick_replies.present?
+      quick_replies.delete('location@#$')
+      markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [quick_replies], one_time_keyboard: true)
+    else
+      markup = nil
+    end
+
+    @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup)
   end
 end
