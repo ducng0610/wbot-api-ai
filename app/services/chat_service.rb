@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 class ChatService
-  def initialize(uid)
+  def initialize(uid, platform = 'facebook')
     @client = ApiAiRuby::Client.new(
       client_access_token: ENV['API_AI_CLIENT_ACCESS_TOKEN'],
       api_session_id: uid
     )
+    @platform = platform
   end
 
   def execute(message)
@@ -33,8 +34,11 @@ class ChatService
       @response_message = search_psi(api_ai_response[:result][:parameters][:region])
     when 'ask.weather.forecast'
       @response_template = search_24HoursForecast(api_ai_response[:result][:parameters][:region])
-      # This is for telegram only, because Telegram cannot display facebook template
-      @response_message = translate_24h_forecast_template_to_message(@response_template)
+
+      if @platform == 'telegram'
+        # This is for telegram only, because Telegram cannot display facebook template
+        @response_template = translate_24h_forecast_to_template_telegram(@response_template)
+      end
     when 'add.help.quickreplies'
       @response_message = api_ai_response_message
       @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
@@ -65,8 +69,10 @@ class ChatService
     WeatherService.search_psi(region)
   end
 
-  def translate_24h_forecast_template_to_message(template_str)
+  def translate_24h_forecast_to_template_telegram(template_str)
     template = JSON.parse(template_str)
-    template['attachment']['payload']['elements'].last(3).map{ |w| w.values.join(' (') }.join('). ')
+    body_title = '<b>' + template['attachment']['payload']['elements'].first['title'] + '</b>' + "\n"
+    body_content = '<i>' + template['attachment']['payload']['elements'].last(3).map{ |w| w.values.join(' - ') }.join("\n") + '</i>'
+    body_title + body_content
   end
 end
