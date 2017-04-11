@@ -16,7 +16,7 @@ class BotMessageDispatcher
     uid = @user.telegram_id
 
     if request_message.start_with? '/'
-      unknown_command
+      handle_command(request_message)
     else
       unless request_message.nil?
         puts "[debuz] got from Telegram... #{request_message}"
@@ -32,8 +32,17 @@ class BotMessageDispatcher
 
   private
 
-  def unknown_command
-    send_message('Unknown command.')
+  def handle_command(request_message)
+    case request_message
+    when '/start'
+      message = 'Hi, This is WeatherBot. How can I help you?'
+    when '/stop'
+      message = 'Sorry to see you go :('
+    else
+      message = 'Unknown command. :)'
+    end
+
+    send_message(message)
   end
 
   def send_message(text, options={})
