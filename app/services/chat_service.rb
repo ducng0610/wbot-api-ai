@@ -18,7 +18,7 @@ class ChatService
       @response_message = api_ai_response_message
       @quick_replies = case action
                        when 'ask.current.weather'
-                         ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map{ |kl| kl.name.capitalize }
+                         ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map { |kl| kl.name.capitalize }
                        when 'ask.psi', 'ask.weather.forecast'
                          %w(North West East South Central)
                        end
@@ -72,7 +72,7 @@ class ChatService
   def translate_24h_forecast_to_template_telegram(template_str)
     template = JSON.parse(template_str)
     body_title = '<b>' + template['attachment']['payload']['elements'].first['title'] + '</b>' + "\n"
-    body_content = '<i>' + template['attachment']['payload']['elements'].last(3).map{ |w| w.values.join(' - ') }.join("\n") + '</i>'
+    body_content = '<i>' + template['attachment']['payload']['elements'].last(3).map { |w| w.values.join(' - ') }.join("\n") + '</i>'
     body_title + body_content
   end
 end
