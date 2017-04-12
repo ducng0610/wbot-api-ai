@@ -1,16 +1,26 @@
+# production:
+#   clients:
+#     default:
+#       database: heroku_6bf76c3s
+#       hosts:
+#         - ds151078.mlab.com:51078
+#       options:
+#         user: rth
+#         password: 123456
+#         roles:
+#           - 'dbOwner'
+#         max_pool_size: 20
+#         min_pool_size: 2
 production:
   clients:
     default:
-      database: heroku_6bf76c3s
+      database: wbot_production
       hosts:
-        - ds151078.mlab.com:51078
+        - localhost:27017
       options:
-        user: rth
-        password: 123456
-        roles:
-          - 'dbOwner'
-        max_pool_size: 20
-        min_pool_size: 2
+        read:
+          mode: :primary
+        max_pool_size: 1
 development:
   clients:
     default:
