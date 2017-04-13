@@ -46,7 +46,6 @@ group :development do
   gem 'erb2haml'
   gem 'rubocop', '~> 0.46.0', require: false
   gem 'pry-rails'
-  gem 'figaro'
 
   gem 'capistrano'
   gem 'capistrano3-puma'
@@ -70,3 +69,4 @@ gem 'rest-client'
 # A fuzzy string matching library for ruby, supports only Jaro-Winkler distance algorithm
 gem 'fuzzy-string-match'
 gem 'telegram-bot-ruby'
+gem 'figaro'
