@@ -16,6 +16,9 @@ class BotMessageDispatcher
     request_message = @message[:message][:text]
     uid = @user.telegram_id
 
+    # Record to Dashbot
+    DashbotIntegration.incoming(request_message, uid)
+
     if request_message.start_with? '/'
       handle_command(request_message)
     else
@@ -48,6 +51,8 @@ class BotMessageDispatcher
   end
 
   def send_message(text, quick_replies = nil, template = nil)
+    uid = @user.telegram_id
+
     if quick_replies.present?
       quick_replies.delete('location@#$')
       markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: [quick_replies], one_time_keyboard: true)
@@ -62,6 +67,9 @@ class BotMessageDispatcher
       parse_mode = nil
     end
 
-    @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup, parse_mode: parse_mode)
+    @api.call('sendMessage', chat_id: uid, text: text, reply_markup: markup, parse_mode: parse_mode)
+
+    # Record to Dashbot
+    DashbotIntegration.outgoing(text, uid)
   end
 end
