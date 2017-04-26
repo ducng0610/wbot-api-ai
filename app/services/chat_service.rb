@@ -16,12 +16,34 @@ class ChatService
 
     if action_incomplete
       @response_message = api_ai_response_message
-      @quick_replies = case action
-                       when 'ask.current.weather'
-                         ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map { |kl| kl.name.capitalize }
-                       when 'ask.psi', 'ask.weather.forecast'
-                         %w(North West East South Central)
-                       end
+
+      case action
+      when 'ask.current.weather'
+        @quick_replies = ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map { |kl| kl.name.capitalize }
+        # Override with template
+        @response_template = {
+          "attachment":{
+            "type":"template",
+            "payload":{
+              "template_type":"button",
+              "text": @response_message,
+              "buttons":[
+                {
+                  "type": "web_url",
+                  "url": "#{ENV['BASE_URL']}/webview/locations",
+                  "title": "Choose from list",
+                  "webview_height_ratio": "tall",
+                  "messenger_extensions": true,
+                  "fallback_url": "#{ENV['BASE_URL']}/webview/fallback"
+                }
+              ]
+            }
+          }
+        }.to_json
+      when 'ask.psi', 'ask.weather.forecast'
+        @quick_replies = %w(North West East South Central)
+      end
+
       return
     end
 

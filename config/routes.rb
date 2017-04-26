@@ -7,5 +7,11 @@ Rails.application.routes.draw do
   post '/start', to: 'api/chat#start'
   post '/message', to: 'api/chat#message'
 
+  resources :webview do
+    get 'fallback', on: :collection
+    get 'locations', on: :collection
+    get 'current_weather', on: :collection
+  end
+
   mount Facebook::Messenger::Server, at: 'bot'
 end

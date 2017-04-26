@@ -60,11 +60,11 @@ class BotMessageDispatcher
       markup = nil
     end
 
-    if template
+    if text
+      parse_mode = nil
+    else
       parse_mode = 'HTML'
       text = template
-    else
-      parse_mode = nil
     end
 
     @api.call('sendMessage', chat_id: uid, text: text, reply_markup: markup, parse_mode: parse_mode)
