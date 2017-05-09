@@ -74,6 +74,5 @@ gem 'rest-client'
 gem 'fuzzy-string-match'
 gem 'telegram-bot-ruby'
 gem 'figaro'
-
-# Not using yet
-# gem 'haml'
+gem 'rails_admin'
+gem 'devise'
