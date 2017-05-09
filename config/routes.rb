@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   resources :webview do
     get 'fallback', on: :collection
     get 'locations', on: :collection
-    get 'reply_to_location', on: :collection
+    post 'reply_to_location', on: :collection
   end
 
   mount Facebook::Messenger::Server, at: 'bot'

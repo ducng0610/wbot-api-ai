@@ -29,7 +29,7 @@ class FacebookMessengerService
           access_token: ENV['ACCESS_TOKEN']
         )
       rescue => e
-        puts '[debuz] ' + e.message
+        puts '[debuz] Cannot deliver message to facebook: ' + e.message
       end
     end
   end

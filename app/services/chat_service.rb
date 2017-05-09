@@ -19,15 +19,14 @@ class ChatService
 
       case action
       when 'ask.current.weather'
-        @quick_replies = ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map { |kl| kl.name.capitalize }
         # Override with template
         @response_template = {
-          "attachment":{
-            "type":"template",
-            "payload":{
-              "template_type":"button",
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "button",
               "text": @response_message,
-              "buttons":[
+              "buttons": [
                 {
                   "type": "web_url",
                   "url": "#{ENV['BASE_URL']}/webview/locations",
@@ -40,6 +39,9 @@ class ChatService
             }
           }
         }.to_json
+
+        @quick_replies = ['location@#$'] + KnownLocation.where(type: 'location').sample(5).map { |kl| kl.name.capitalize }
+        @follow_up_response_message = 'Some suggestions for you...'
       when 'ask.psi', 'ask.weather.forecast'
         @quick_replies = %w(North West East South Central)
       end

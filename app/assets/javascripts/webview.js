@@ -7,22 +7,26 @@
 }(document, 'script', 'Messenger'));
 
 window.extAsyncInit = function() {
-  // MessengerExtensions.getUserID(function success(uids) {
-  //   // User ID was successfully obtained.
-  //   var psid = uids.psid;
-  // }, function error(err, errorMessage) {
-  //   // Error handling code
-  // });
+  $(".location-input").on('change', function() {
+    var location = $('input[name=location]:checked').val();
 
-  // $('#base_url').val();
-
-  // $(".location-input").on('change', function() {
-  //   var location = $('input[name=location]:checked').val();
-
-  //   MessengerExtensions.requestCloseBrowser(function success() {
-
-  //   }, function error(err, errorMessage) {
-
-  //   });
-  // });
+    MessengerExtensions.getUserID(function success(uids) {
+      var psid = uids.psid;
+      var base_url = $('#base_url').val() + '/webview/reply_to_location';
+      $.post(base_url,
+        {
+          location: location,
+          uid: psid
+        },
+        function(data, status){
+          MessengerExtensions.requestCloseBrowser(function success() {
+            // OK to close browser
+          }, function error(err, errorMessage) {
+            console.log('Cannot close browser: ' + errorMessage);
+          });
+        });
+    }, function error(err, errorMessage) {
+      console.log('Cannot get UID: ' + errorMessage);
+    });
+  });
 };
