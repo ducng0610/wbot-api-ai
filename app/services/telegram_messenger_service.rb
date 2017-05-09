@@ -2,7 +2,7 @@
 # Telegram platform only
 require 'telegram/bot'
 
-class BotMessageDispatcher
+class TelegramMessengerService
   attr_reader :message, :user
 
   def initialize(message, user)
@@ -17,7 +17,7 @@ class BotMessageDispatcher
     uid = @user.telegram_id
 
     # Record
-    DashbotIntegration.incoming(request_message, uid)
+    DashbotIntegrationService.incoming(request_message, uid)
     Message.create(body: request_message, user: @user, kind: 'incoming')
 
     if request_message.start_with? '/'
@@ -71,7 +71,7 @@ class BotMessageDispatcher
     @api.call('sendMessage', chat_id: uid, text: text, reply_markup: markup, parse_mode: parse_mode)
 
     # Record
-    DashbotIntegration.outgoing(text, uid)
+    DashbotIntegrationService.outgoing(text, uid)
     Message.create(body: text, user: @user, kind: 'outgoing')
   end
 end

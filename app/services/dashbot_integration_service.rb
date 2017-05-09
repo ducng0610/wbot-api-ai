@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class DashbotIntegration
+class DashbotIntegrationService
   class << self
     def incoming(text, uid)
       fire_request(text, uid, 'incoming')

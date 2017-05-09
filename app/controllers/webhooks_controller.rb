@@ -13,7 +13,7 @@ class WebhooksController < ApplicationController
   end
 
   def dispatcher
-    BotMessageDispatcher
+    TelegramMessengerService
   end
 
   def from

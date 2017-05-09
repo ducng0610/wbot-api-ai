@@ -7,11 +7,11 @@
     / = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
-    / = hidden_field_tag :base_url, ENV['BASE_URL']
+    = hidden_field_tag :base_url, ENV['BASE_URL']
     - @locations.each do |location|
       .row
-        /= radio_button_tag :location, location, false, class: 'location-input'
-        /%font.radio-lable{style: 'font-size: 35px;'}= location
-        %h1
-          %a{href: "#{ENV['BASE_URL']}/webview/current_weather?location=#{location}"}= location
+        = radio_button_tag :location, location, false, class: 'location-input'
+        %font.radio-lable{style: 'font-size: 35px;'}= location
+        / %h1
+        /   %a{href: "#{ENV['BASE_URL']}/webview/current_weather?location=#{location}"}= location
         %hr/
