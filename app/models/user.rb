@@ -9,6 +9,8 @@ class User
   field :first_name, type: String
   field :last_name, type: String
 
+  has_many :messages
+
   validates_uniqueness_of :uid
   validates_uniqueness_of :telegram_id
 end

@@ -4,6 +4,8 @@ class FacebookMessengerService
     def deliver(uid, message, quick_replies = nil, template = nil)
       puts "[debuz] sending '#{message}' to user '#{uid}'"
 
+      Message.create(body: template.present? ? template : message, user: User.find_by(uid: uid), kind: 'outgoing')
+
       if template
         message_content = JSON.parse(template)
       else

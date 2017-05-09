@@ -1,8 +1,31 @@
 RailsAdmin.config do |config|
-  config.authenticate_with do
-    warden.authenticate! scope: :admin
+  config.included_models = ["User", "Message"]
+
+  config.model 'User' do
+    list do
+      field :first_name
+      field :last_name
+      field :uid
+      field :telegram_id
+      field :email
+      field :messages
+    end
   end
-  config.current_user_method(&:current_admin)
+
+  config.model 'Message' do
+    list do
+      field :created_at
+      field :body
+      field :kind
+      field :user
+    end
+  end
+
+  # Devise - currently is bugged
+  # config.authenticate_with do
+  #   warden.authenticate! scope: :admin
+  # end
+  # config.current_user_method(&:current_admin)
 
   ### Popular gems integration
 

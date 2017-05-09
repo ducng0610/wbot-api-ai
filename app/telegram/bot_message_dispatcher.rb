@@ -16,8 +16,9 @@ class BotMessageDispatcher
     request_message = @message[:message][:text]
     uid = @user.telegram_id
 
-    # Record to Dashbot
+    # Record
     DashbotIntegration.incoming(request_message, uid)
+    Message.create(body: request_message, user: @user, kind: 'incoming')
 
     if request_message.start_with? '/'
       handle_command(request_message)
@@ -69,7 +70,8 @@ class BotMessageDispatcher
 
     @api.call('sendMessage', chat_id: uid, text: text, reply_markup: markup, parse_mode: parse_mode)
 
-    # Record to Dashbot
+    # Record
     DashbotIntegration.outgoing(text, uid)
+    Message.create(body: text, user: @user, kind: 'outgoing')
   end
 end

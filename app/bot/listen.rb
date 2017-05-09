@@ -15,7 +15,7 @@ Bot.on :message do |message|
 
   request_message = message.text
   uid = message.sender['id']
-  User.find_or_create_by(uid: uid)
+  user = User.find_or_create_by(uid: uid)
 
   # handle `share location` facebook message
   if request_message.nil?
@@ -30,13 +30,13 @@ Bot.on :message do |message|
   end
 
   unless request_message.nil?
+    Message.create(body: request_message, user: user, kind: 'incoming')
+
     puts "[debuz] got from Facebook... #{request_message}"
     chat_service = ChatService.new(uid)
     chat_service.execute(request_message)
     FacebookMessengerService.deliver(uid, chat_service.response_message, chat_service.quick_replies, chat_service.response_template)
-    if chat_service.follow_up_response_message.present?
-      FacebookMessengerService.deliver(uid, chat_service.follow_up_response_message, chat_service.quick_replies)
-    end
+    FacebookMessengerService.deliver(uid, chat_service.follow_up_response_message, chat_service.quick_replies) if chat_service.follow_up_response_message.present?
   end
 end
 
