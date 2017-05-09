@@ -4,14 +4,16 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title Wbot
     / = csrf_meta_tags
-    / = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
     = hidden_field_tag :base_url, ENV['BASE_URL']
-    - @locations.each do |location|
-      .row
-        = radio_button_tag :location, location, false, class: 'location-input'
-        %font.radio-lable{style: 'font-size: 35px;'}= location
-        / %h1
-        /   %a{href: "#{ENV['BASE_URL']}/webview/current_weather?location=#{location}"}= location
-        %hr/
+    .container
+      %h2 Supported locations in Singapore:
+      - @locations.each do |location|
+        %ul
+          %li
+            = radio_button_tag :location, location, false, class: 'location-input'
+            %label{:for => "location_#{location.gsub(' ', '_')}"}= location
+            .check
+              .inside
