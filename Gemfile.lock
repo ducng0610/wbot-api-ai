@@ -95,6 +95,7 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    devise-bootstrapped (0.1.1)
     domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
     equalizer (0.0.11)
@@ -327,6 +328,7 @@ DEPENDENCIES
   capistrano3-puma
   coffee-rails (~> 4.2)
   devise
+  devise-bootstrapped
   erb2haml
   facebook-messenger
   figaro
