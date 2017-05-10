@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class Api::ChatController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def message
     chat_service = ChatService.new(params[:uid])
     chat_service.execute(params[:message])

@@ -1,5 +1,7 @@
 # Facebook webview
 class WebviewController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def locations
     @locations = KnownLocation.where(type: 'location').map { |kl| kl.name.capitalize }
   end
