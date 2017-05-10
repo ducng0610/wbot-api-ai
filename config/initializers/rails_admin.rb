@@ -22,10 +22,10 @@ RailsAdmin.config do |config|
   end
 
   # Devise - currently is bugged
-  # config.authenticate_with do
-  #   warden.authenticate! scope: :admin
-  # end
-  # config.current_user_method(&:current_admin)
+  config.authenticate_with do
+    warden.authenticate! scope: :admin
+  end
+  config.current_user_method(&:current_admin)
 
   ### Popular gems integration
 

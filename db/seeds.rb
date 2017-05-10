@@ -51,3 +51,6 @@ KnownLocation.create(lat: nil, lon: nil, name: 'south', type: 'region')
 KnownLocation.create(lat: nil, lon: nil, name: 'east', type: 'region')
 KnownLocation.create(lat: nil, lon: nil, name: 'west', type: 'region')
 KnownLocation.create(lat: nil, lon: nil, name: 'central', type: 'region')
+
+Admin.create(email: 'developer.rth@gmail.com', password: '123123')
+Admin.create(email: 'duc4nh.nguyen@gmail.com', password: '123123')
