@@ -3,9 +3,11 @@ RailsAdmin.config do |config|
 
   config.model 'User' do
     list do
+      field :uid
+      field :source
       field :first_name
       field :last_name
-      field :uid
+      field :gender
       field :email
     end
   end
