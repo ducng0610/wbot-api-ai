@@ -14,7 +14,7 @@ class TelegramMessengerService
 
   def process
     request_message = @message[:message][:text]
-    uid = @user.telegram_id
+    uid = @user.uid
 
     # Record
     DashbotIntegrationService.incoming(request_message, uid)
@@ -52,7 +52,7 @@ class TelegramMessengerService
   end
 
   def send_message(text, quick_replies = nil, template = nil)
-    uid = @user.telegram_id
+    uid = @user.uid
 
     if quick_replies.present?
       quick_replies.delete('location@#$')

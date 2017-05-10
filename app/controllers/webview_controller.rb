@@ -8,7 +8,7 @@ class WebviewController < ApplicationController
     return if params[:location].blank? || params[:uid].blank?
     request_message = params[:location]
     uid = params[:uid]
-    user = User.find_or_create_by(uid: uid)
+    user = User.where(uid: uid).first || User.create(uid: uid, source: 'facebook')
 
     Message.create(body: request_message, user: user, kind: 'incoming')
 

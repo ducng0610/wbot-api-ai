@@ -21,11 +21,11 @@ class WebhooksController < ApplicationController
   end
 
   def user
-    @user ||= User.where(telegram_id: from[:id]).first || register_user
+    @user ||= User.where(uid: from[:id]).first || register_user
   end
 
   def register_user
-    @user = User.create(telegram_id: from[:id], uid: from[:id])
+    @user = User.create(uid: from[:id], source: 'telegram')
     @user.update_attributes!(first_name: from[:first_name], last_name: from[:last_name])
     @user
   end
