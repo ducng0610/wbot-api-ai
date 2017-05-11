@@ -3,8 +3,8 @@ RailsAdmin.config do |config|
   # config.included_models = ["User", "Message", "KnownLocation"]
 
   config.navigation_static_links = {
-    'Chat history' => '/',
-    'Statistic' => '/'
+    'Chat history' => '/acp_addon/chat_histories',
+    'Statistic' => '/acp_addon/statistic'
   }
   config.navigation_static_label = "Add-ons"
 

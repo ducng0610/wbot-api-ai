@@ -1,0 +1,17 @@
+.chat-history-container.col-md-8.col-md-offset-2
+  %table.table.table-bordered.table-hover
+    %thead
+      %tr
+        %th First name
+        %th Last name
+        %th Incoming
+        %th Outcoming
+        %th Total
+    %tbody
+      - @users.each do |user|
+        %tr.clickable-row{'data-href' => "/acp_addon/chat_history/#{user.id}"}
+          %td= user.first_name
+          %td= user.last_name
+          %td= user.messages.where(kind: 'incoming').count
+          %td= user.messages.where(kind: 'outgoing').count
+          %td= user.messages.count

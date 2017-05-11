@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 Rails.application.routes.draw do
   devise_for :admins
+
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   root 'home#index'
@@ -17,6 +18,10 @@ Rails.application.routes.draw do
     get 'locations', on: :collection
     post 'reply_to_location', on: :collection
   end
+
+  get 'acp_addon/chat_histories' => 'acp_addon#chat_histories'
+  get 'acp_addon/statistic' => 'acp_addon#statistic'
+  get 'acp_addon/chat_history/:uid' => 'acp_addon#chat_history'
 
   mount Facebook::Messenger::Server, at: 'bot'
 end

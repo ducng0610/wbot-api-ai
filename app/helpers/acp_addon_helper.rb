@@ -1,0 +1,2 @@
+module AcpAddonHelper
+end

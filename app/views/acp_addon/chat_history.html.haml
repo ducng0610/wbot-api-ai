@@ -1,0 +1,16 @@
+.row
+  .header-container.col-md-12
+    %h1= "#{@user.first_name} #{@user.last_name} - #{@user.uid}"
+.row
+  .col-md-8.col-md-offset-2
+    %table.table.table-bordered.table-hover
+      %tbody
+        - @user.messages.order_by(:created_at.desc).each do |message|
+          - if message.kind == 'outgoing'
+            %tr.success
+              %td.right= message.body
+              %td= message.created_at
+          - else
+            %tr.danger
+              %td.bold= message.body
+              %td= message.created_at
