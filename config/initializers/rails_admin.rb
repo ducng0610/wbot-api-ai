@@ -1,5 +1,12 @@
+# frozen_string_literal: true
 RailsAdmin.config do |config|
-  config.included_models = ["User", "Message"]
+  # config.included_models = ["User", "Message", "KnownLocation"]
+
+  config.navigation_static_links = {
+    'Chat history' => '/',
+    'Statistic' => '/'
+  }
+  config.navigation_static_label = "Add-ons"
 
   config.model 'User' do
     list do
@@ -8,7 +15,7 @@ RailsAdmin.config do |config|
       field :first_name
       field :last_name
       field :gender
-      field :email
+      field :profile_pic
     end
   end
 

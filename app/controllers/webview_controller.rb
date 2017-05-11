@@ -1,9 +1,11 @@
+# frozen_string_literal: true
 # Facebook webview
 class WebviewController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def locations
     @locations = KnownLocation.where(type: 'location').map { |kl| kl.name.capitalize }
+    render layout: false
   end
 
   def reply_to_location

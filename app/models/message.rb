@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Message
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -9,5 +10,5 @@ class Message
 
   belongs_to :user
 
-  validates_inclusion_of :kind, :in => ["outgoing", "incoming"], allow_nil: false
+  validates_inclusion_of :kind, in: %w(outgoing incoming), allow_nil: false
 end

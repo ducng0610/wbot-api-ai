@@ -22,16 +22,16 @@ class ChatService
         # Override with template
         @response_template = {
           "attachment": {
-            "type": "template",
+            "type": 'template',
             "payload": {
-              "template_type": "button",
+              "template_type": 'button',
               "text": @response_message,
               "buttons": [
                 {
-                  "type": "web_url",
+                  "type": 'web_url',
                   "url": "#{ENV['BASE_URL']}/webview/locations",
-                  "title": "Choose from list",
-                  "webview_height_ratio": "tall",
+                  "title": 'Choose from list',
+                  "webview_height_ratio": 'tall',
                   "messenger_extensions": true,
                   "fallback_url": "#{ENV['BASE_URL']}/webview/fallback"
                 }

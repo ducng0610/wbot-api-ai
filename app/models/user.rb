@@ -11,6 +11,7 @@ class User
   field :last_name, type: String
   field :gender, type: String
   field :source, type: String
+  field :profile_pic, type: String
 
   has_many :messages
 
@@ -27,7 +28,8 @@ class User
         update_attributes(
           first_name: body['first_name'],
           last_name: body['last_name'],
-          gender: body['gender']
+          gender: body['gender'],
+          profile_pic: body['profile_pic']
         )
       else
         puts "[debuz] Cannot get user's facebook profile"

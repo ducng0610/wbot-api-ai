@@ -3,8 +3,7 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title Wbot
-    / = csrf_meta_tags
-    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = stylesheet_link_tag    'webview'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
     = hidden_field_tag :base_url, ENV['BASE_URL']

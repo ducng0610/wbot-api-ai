@@ -22,7 +22,7 @@ class DashbotIntegrationService
 
       RestClient.post(url, params.to_json, content_type: 'application/json') do |response, _request, _result|
         if response.code == 200
-          puts "[debuz] Successfully recorded to Dashbot"
+          puts '[debuz] Successfully recorded to Dashbot'
         else
           puts "[debuz] Dashbot API error: #{response.body}"
         end
