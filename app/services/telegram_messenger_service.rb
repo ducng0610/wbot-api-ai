@@ -13,7 +13,7 @@ class TelegramMessengerService
   end
 
   def process
-    request_message = @message[:message][:text]
+    request_message = @message
     uid = @user.uid
 
     # Record
@@ -35,6 +35,10 @@ class TelegramMessengerService
     end
   end
 
+  def deliver
+    send_message(@message)
+  end
+
   private
 
   def handle_command(request_message)
@@ -51,7 +55,7 @@ class TelegramMessengerService
     send_message(message, quick_replies)
   end
 
-  def send_message(text, quick_replies = nil, template = nil)
+  def send_message(message, quick_replies = nil, template = nil)
     uid = @user.uid
 
     if quick_replies.present?
@@ -61,17 +65,17 @@ class TelegramMessengerService
       markup = nil
     end
 
-    if text
+    if message
       parse_mode = nil
     else
       parse_mode = 'HTML'
-      text = template
+      message = template
     end
 
-    @api.call('sendMessage', chat_id: uid, text: text, reply_markup: markup, parse_mode: parse_mode)
+    @api.call('sendMessage', chat_id: uid, text: message, reply_markup: markup, parse_mode: parse_mode)
 
     # Record
-    DashbotIntegrationService.outgoing(text, uid)
-    Message.create(body: text, user: @user, kind: 'outgoing')
+    DashbotIntegrationService.outgoing(message, uid)
+    Message.create(body: message, user: @user, kind: 'outgoing')
   end
 end

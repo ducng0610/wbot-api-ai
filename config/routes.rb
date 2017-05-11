@@ -21,7 +21,8 @@ Rails.application.routes.draw do
 
   get 'acp_addon/chat_histories' => 'acp_addon#chat_histories'
   get 'acp_addon/statistic' => 'acp_addon#statistic'
-  get 'acp_addon/chat_history/:uid' => 'acp_addon#chat_history'
+  get 'acp_addon/chat_history/:id' => 'acp_addon#chat_history'
+  post 'acp_addon/send_message' => 'acp_addon#send_message'
 
   mount Facebook::Messenger::Server, at: 'bot'
 end

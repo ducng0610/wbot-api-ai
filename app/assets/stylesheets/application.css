@@ -14,3 +14,15 @@
  *= require bootstrap.min
  *= require acp_addon
  */
+
+.right {
+  text-align: right;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.center {
+  text-align: center;
+}
