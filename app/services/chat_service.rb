@@ -71,7 +71,7 @@ class ChatService
     end
 
     case action
-    when 'ask.current.weather', 'ask.psi', 'ask.weather.forecast'
+    when 'ask.current.weather', 'ask.psi', 'ask.weather.forecast', 'tell.joke', 'input.unknown'
       @follow_up_response_message = 'Can I help you with other weather information?'
       @quick_replies = ['Current weather', '24-Hour Forecast', 'PSI']
     end
